@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <!-- Offshore Platform Illustration -->
+  <!-- Platform Base -->
+  <path d="M150 650 L650 650 L600 750 L200 750 Z" fill="#B8860B" />
+  
+  <!-- Main Structure -->
+  <rect x="250" y="350" width="300" height="300" fill="#B8860B" />
+  
+  <!-- Platform Legs -->
+  <path d="M250 650 L150 750" stroke="#B8860B" stroke-width="20" />
+  <path d="M550 650 L650 750" stroke="#B8860B" stroke-width="20" />
+  
+  <!-- Derrick Tower -->
+  <path d="M350 350 L450 350 L450 100 L350 100 Z" fill="#B8860B" />
+  
+  <!-- Tower Cross Supports -->
+  <path d="M350 150 L450 250" stroke="#B8860B" stroke-width="15" />
+  <path d="M450 150 L350 250" stroke="#B8860B" stroke-width="15" />
+  <path d="M350 300 L450 200" stroke="#B8860B" stroke-width="15" />
+  <path d="M450 300 L350 200" stroke="#B8860B" stroke-width="15" />
+  
+  <!-- Tower Top -->
+  <circle cx="400" cy="120" r="40" fill="#B8860B" />
+  
+  <!-- Crane -->
+  <path d="M550 400 L650 300 L680 320" stroke="#B8860B" stroke-width="10" fill="none" />
+  <rect x="540" y="390" width="20" height="60" fill="#B8860B" />
+  
+  <!-- Helipad -->
+  <circle cx="300" cy="450" r="50" fill="#004A7B" />
+  <path d="M270 450 L330 450 M300 420 L300 480" stroke="white" stroke-width="10" />
+  
+  <!-- Water -->
+  <path d="M0 750 L800 750 L800 780 L0 780 Z" fill="#004A7B" opacity="0.7" />
+  
+  <!-- Small Details -->
+  <rect x="380" y="500" width="40" height="60" fill="#004A7B" />
+  <rect x="280" y="520" width="30" height="40" fill="#004A7B" />
+  <rect x="480" y="530" width="35" height="45" fill="#004A7B" />
+</svg>

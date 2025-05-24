@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+  --gold-500: 184, 134, 11;
+  --gold-600: 153, 101, 21;
+  --gold-700: 139, 69, 19;
+  --blue-600: 0, 71, 171;
+  --blue-700: 0, 56, 147;
+  --blue-800: 0, 42, 123;
+  --blue-900: 0, 28, 99;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-gold-500 {
+    color: rgb(var(--gold-500));
+  }
+  .text-gold-600 {
+    color: rgb(var(--gold-600));
+  }
+  .text-gold-700 {
+    color: rgb(var(--gold-700));
+  }
+  .bg-gold-500 {
+    background-color: rgb(var(--gold-500));
+  }
+  .bg-gold-600 {
+    background-color: rgb(var(--gold-600));
+  }
+  .bg-gold-700 {
+    background-color: rgb(var(--gold-700));
+  }
+  .border-gold-500 {
+    border-color: rgb(var(--gold-500));
+  }
+  .border-gold-600 {
+    border-color: rgb(var(--gold-600));
+  }
+  .border-gold-700 {
+    border-color: rgb(var(--gold-700));
+  }
+  .hover\:text-gold-500:hover {
+    color: rgb(var(--gold-500));
+  }
+  .hover\:bg-gold-700:hover {
+    background-color: rgb(var(--gold-700));
+  }
+}
