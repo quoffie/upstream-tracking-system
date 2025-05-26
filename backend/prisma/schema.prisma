@@ -49,6 +49,16 @@ enum NotificationType {
   SMS
 }
 
+enum CompanyRegistrationStatus {
+  PENDING_EMAIL_VERIFICATION
+  PENDING_FORM_COMPLETION
+  PENDING_PAYMENT
+  SUBMITTED_FOR_REVIEW
+  REQUIRES_CLARIFICATION
+  APPROVED
+  REJECTED
+}
+
 model User {
   id                String    @id @default(uuid())
   email             String    @unique
@@ -68,6 +78,68 @@ model User {
   sentNotifications Notification[] @relation("SentBy")
   auditLogs         AuditLog[]
   personnel         Personnel?
+  companyRegistration CompanyRegistration? // User can have one pending/active registration
+}
+
+model CompanyRegistration {
+  id                             String                      @id @default(uuid())
+  status                         CompanyRegistrationStatus @default(PENDING_EMAIL_VERIFICATION)
+  companyName                    String
+  incorporationDate              DateTime
+  incorporationPlace             String
+  postalAddress                  String
+  companyEmail                   String // Distinct from user's login email
+  website                        String?
+  contactPersonName              String
+  contactPersonMobile            String
+  subsidiaryOrAffiliateName      String?
+  parentCompanyNationality       String?
+  corporateStructureDetails      Json? // Could be a path to a diagram or structured JSON
+  shareholders                   Json // Array of { name: String, address: String, nationality: String, percentage: Float }
+  holdingCompanyShareholders     Json? // Array of { name: String, sharesInHoldingCo: String } - structure TBD
+  directorsAndManagement         Json // Array of { name: String, position: String, nationality: String }
+  permitCategory                 CompanyCategory
+  preferredActivities            String[] // List of selected activities (max 2)
+  activityDescription            String
+  financialCapabilityInfo        Json // Based on PART TWO - A: type (a,b,c,d), reportPaths: String[], projectedRevenuePath: String?
+  fundingSourcesGhana            String
+  organizationalChartPath        String?
+  staffDetails                   Json // Array of { name: String, gender: String, position: String, nationality: String }
+  expertiseSourcing              String // e.g., "Local and International"
+  equipmentSources               String
+  pastPetroleumExperience        String?
+  globalOperations               String?
+  ghanaContractsAndInvestments   String?
+  threeYearPlanOrgDev            Json // { strategy: String, employmentPlan: String, budget: Float }
+  threeYearPlanTechTransfer      Json // { program: String, budget: Float }
+  threeYearPlanTraining          Json // { program: String, budget: Float }
+  threeYearPlanCSR               Json // { program: String, budget: Float }
+  ghanaianOwnershipPercentage    Float?
+  employmentDetailsLocalContent  String? // PART FOUR - 2
+  infrastructuralInvestmentsGhana Float?
+  servicesToApplicantLast12Months Json? // Array of { type: String, contractSum: Float, clientName: String }
+  servicesByApplicantLast12Months Json? // Array of { type: String, contractSum: Float, customerName: String }
+  rawMaterialsUtilized           String?
+  ghanaianFinishedGoodsUtilized  String?
+  hssePolicyDocPath              String?
+  miscellaneousInfo              String?
+  declarationName                String
+  declarationPosition            String
+  declarationDate                DateTime
+  adminReviewComments            String?
+  createdAt                      DateTime                    @default(now())
+  updatedAt                      DateTime                    @updatedAt
+
+  user                           User                        @relation(fields: [userId], references: [id])
+  userId                         String                      @unique // Each user can only have one active registration application
+
+  approvedCompany                Company?                    @relation("RegistrationToCompany", fields: [approvedCompanyId], references: [id])
+  approvedCompanyId              String?                     @unique
+
+  payment                        Payment?                    @relation("CompanyRegistrationPayment")
+
+  documents                      Document[]
+  inspections                    Inspection[]
 }
 
 model Company {
@@ -93,6 +165,7 @@ model Company {
   jvCompanies             JVCompany[]
   localContentPlans       LCPlan[]
   performanceReports      LCPerformanceReport[]
+  companyRegistration     CompanyRegistration? @relation("RegistrationToCompany")
 }
 
 model JVCompany {
@@ -189,20 +262,20 @@ model LCPerformanceReport {
 model Document {
   id                      String    @id @default(uuid())
   fileName                String
-  fileType                String
-  fileSize                Int
-  filePath                String
-  uploadDate              DateTime  @default(now())
-  expiryDate              DateTime?
-  documentType            String
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  fileType                String // e.g., PDF, DOCX, JPG
+  filePath                String // Path to the stored file
+  fileSize                Int // Size in bytes
+  description             String?
+  uploadedAt              DateTime  @default(now())
   company                 Company?  @relation(fields: [companyId], references: [id])
   companyId               String?
+  companyRegistration     CompanyRegistration? @relation(fields: [companyRegistrationId], references: [id])
+  companyRegistrationId   String?
   personnel               Personnel? @relation(fields: [personnelId], references: [id])
   personnelId             String?
   permit                  Permit?   @relation(fields: [permitId], references: [id])
   permitId                String?
+
   jvCompany               JVCompany? @relation(fields: [jvCompanyId], references: [id])
   jvCompanyId             String?
   lcPlan                  LCPlan?   @relation(fields: [lcPlanId], references: [id])
@@ -238,6 +311,8 @@ model Payment {
   description             String
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
+  companyRegistration     CompanyRegistration? @relation("CompanyRegistrationPayment", fields: [companyRegistrationId], references: [id])
+  companyRegistrationId   String?              @unique
   permit                  Permit    @relation(fields: [permitId], references: [id])
   permitId                String
 }
@@ -254,6 +329,8 @@ model Inspection {
   followUpDate            DateTime?
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
+  companyRegistration     CompanyRegistration? @relation(fields: [companyRegistrationId], references: [id])
+  companyRegistrationId   String?
   permit                  Permit    @relation(fields: [permitId], references: [id])
   permitId                String
   documents               Document[]

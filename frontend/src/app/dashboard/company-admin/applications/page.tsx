@@ -12,8 +12,11 @@ import {
   DocumentIcon,
   NotificationIcon,
   ProfileIcon,
-  SupportIcon
+  SupportIcon,
+  FileTextIcon, // Added for Regular Permit
+  RefreshCwIcon // Added for Rotator Permit
 } from '../../../components/icons/DashboardIcons';
+import Link from 'next/link'; // Added for navigation
 
 export default function MyApplicationsPage() {
   const [activeTab, setActiveTab] = useState('applications');
@@ -179,9 +182,31 @@ export default function MyApplicationsPage() {
     return matchesSearch && matchesStatus && matchesType && matchesTimeframe;
   });
 
-  const handleNewApplication = () => {
-    alert('Redirecting to new application form...');
-  };
+  // const handleNewApplication = () => {
+  //   alert('Redirecting to new application form...');
+  // };
+
+const applicationTypes = [
+  {
+    name: 'New Regular Permit',
+    description: 'Apply for a standard work permit for an individual.',
+    href: '/dashboard/company-admin/applications/regular',
+    icon: FileTextIcon, 
+  },
+  {
+    name: 'New Rotator Permit',
+    description: 'Apply for a work permit for personnel on a rotational schedule.',
+    href: '/dashboard/company-admin/applications/rotator',
+    icon: RefreshCwIcon, 
+  },
+  {
+    name: 'Register Company',
+    description: 'Register your company to operate in the upstream sector.',
+    href: '/apply/company-registration', // Assuming this exists or will be created
+    icon: PermitIcon, // Using PermitIcon as a placeholder, can be changed
+  },
+];
+
 
   const handleViewApplication = (id: string) => {
     alert(`Viewing application details for ${id}`);
@@ -236,37 +261,48 @@ export default function MyApplicationsPage() {
   };
 
   return (
-    <DashboardLayout
-      title="Company Admin Dashboard"
-      userRole="Company Admin"
-      userName="Acme Corporation"
-      userInitials="AC"
-      sidebarItems={sidebarItems}
-    >
-      <div className="space-y-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">My Applications</h2>
-              <p className="text-sm text-gray-500">Manage and track all your permit applications</p>
-            </div>
-            <button 
-              onClick={handleNewApplication}
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-            >
-              New Application
-            </button>
-          </div>
+    <DashboardLayout sidebarItems={sidebarItems} title="Manage Applications" userRole="Company Admin">
+      <div className="p-6 bg-gray-50 min-h-screen">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Manage Applications</h1>
+          <p className="text-gray-600 mt-1">Oversee, track, and initiate new applications for your company.</p>
+        </header>
 
-          {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        {/* Section to start new applications */}
+        <div className="mb-10">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-5">Start a New Application</h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {applicationTypes.map((appType) => (
+              <Link key={appType.name} href={appType.href} legacyBehavior>
+                <a className="block p-6 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 ease-in-out transform hover:-translate-y-1">
+                  <div className="flex items-center justify-center mb-4 w-12 h-12 rounded-full bg-indigo-100 text-indigo-600">
+                    <appType.icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">{appType.name}</h5>
+                  <p className="font-normal text-sm text-gray-600">{appType.description}</p>
+                </a>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Submitted Applications Section Header */}
+        <div className="mb-4 pt-6 border-t border-gray-200">
+            <h2 className="text-2xl font-semibold text-gray-800">My Submitted Applications</h2>
+        </div>
+
+        {/* Filters and Search */}
+        <div className="mb-6 p-4 bg-white rounded-lg shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <input
-                type="text"
-                placeholder="Search applications..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              <label htmlFor="searchQuery" className="block text-sm font-medium text-gray-700">Search</label>
+              <input 
+                type="text" 
+                id="searchQuery" 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                placeholder="ID, Applicant, Type..."
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
             <div>
@@ -475,7 +511,6 @@ export default function MyApplicationsPage() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button 
-              onClick={handleNewApplication}
               className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors"
             >
               <div className="text-center">
