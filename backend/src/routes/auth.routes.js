@@ -86,10 +86,7 @@ router.post('/login', async (req, res) => {
 
     // Find user
     const user = await req.prisma.user.findUnique({
-      where: { email },
-      include: {
-        company: true
-      }
+      where: { email }
     });
 
     if (!user) {
@@ -128,8 +125,7 @@ router.post('/login', async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
-        company: user.company
+        role: user.role
       }
     });
   } catch (error) {

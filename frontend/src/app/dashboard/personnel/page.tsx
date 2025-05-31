@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
+import { getPersonnelMenuItems } from '../../components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApplicationIcon,
@@ -42,18 +44,11 @@ const COLORS = ['#00C49F', '#FFBB28', '#FF8042'];
 
 export default function PersonnelDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
-
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/personnel', icon: HomeIcon, current: activeTab === 'overview' },
-    { name: 'My Applications', href: '/dashboard/personnel/applications', icon: ApplicationIcon, current: activeTab === 'applications' },
-    { name: 'My Permits', href: '/dashboard/personnel/permits', icon: PermitIcon, current: activeTab === 'permits' },
-    { name: 'Certificates & Documents', href: '/dashboard/personnel/documents', icon: DocumentIcon, current: activeTab === 'documents' },
-    { name: 'Payment & Receipts', href: '/dashboard/personnel/payments', icon: PaymentIcon, current: activeTab === 'payments' },
-    { name: 'Application History', href: '/dashboard/personnel/history', icon: HistoryIcon, current: activeTab === 'history' },
-    { name: 'Notifications & Alerts', href: '/dashboard/personnel/notifications', icon: NotificationIcon, current: activeTab === 'notifications' },
-    { name: 'Profile/Settings', href: '/dashboard/personnel/profile', icon: ProfileIcon, current: activeTab === 'profile' },
-    { name: 'Help/Support', href: '/dashboard/personnel/support', icon: SupportIcon, current: activeTab === 'support' },
-  ];
+  const pathname = usePathname();
+  const sidebarItems = getPersonnelMenuItems(pathname);
+  
+  console.log('Personnel sidebarItems:', sidebarItems);
+  console.log('Personnel pathname:', pathname);
   
   // Action buttons for quick access
   const quickActions = [

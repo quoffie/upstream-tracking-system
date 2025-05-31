@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
+import { getFinanceMenuItems } from '../../components/layouts/DashboardMenus';
 import {
   HomeIcon,
   PaymentIcon,
@@ -43,20 +46,76 @@ const COLORS = ['#00C49F', '#FFBB28', '#FF8042', '#0088FE'];
 
 export default function FinanceDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/finance', icon: HomeIcon, current: activeTab === 'overview' },
-    { name: 'Payment Processing', href: '/dashboard/finance/payments', icon: PaymentIcon, current: activeTab === 'payments' },
-    { name: 'Payment Verification', href: '/dashboard/finance/verification', icon: DocumentIcon, current: activeTab === 'verification' },
-    { name: 'Revenue Analytics', href: '/dashboard/finance/analytics', icon: AnalyticsIcon, current: activeTab === 'analytics' },
-    { name: 'Invoices & Receipts', href: '/dashboard/finance/invoices', icon: DocumentIcon, current: activeTab === 'invoices' },
-    { name: 'Fee Management', href: '/dashboard/finance/fees', icon: CalculatorIcon, current: activeTab === 'fees' },
-    { name: 'Transaction History', href: '/dashboard/finance/history', icon: HistoryIcon, current: activeTab === 'history' },
-    { name: 'Audit Logs', href: '/dashboard/finance/audit', icon: HistoryIcon, current: activeTab === 'audit' },
-    { name: 'Notifications', href: '/dashboard/finance/notifications', icon: NotificationIcon, current: activeTab === 'notifications' },
-    { name: 'Profile/Settings', href: '/dashboard/finance/profile', icon: ProfileIcon, current: activeTab === 'profile' },
-    { name: 'Help/Support', href: '/dashboard/finance/support', icon: SupportIcon, current: activeTab === 'support' },
-  ];
+  // Check authentication on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (!token || !userData) {
+      // Redirect to login if not authenticated
+      router.push('/login?redirect=/dashboard/finance');
+      return;
+    }
+    
+    try {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      
+      // Check if user has finance role
+      if (parsedUser.role !== 'FINANCE_OFFICER') {
+        // Redirect to appropriate dashboard based on role
+        const getDashboardRoute = (role: string) => {
+          switch (role) {
+            case 'COMPANY_ADMIN':
+              return '/dashboard/company-admin';
+            case 'COMMISSION_ADMIN':
+              return '/dashboard/admin';
+            case 'COMPLIANCE_OFFICER':
+              return '/dashboard/reviewer';
+            case 'IMMIGRATION_OFFICER':
+              return '/dashboard/immigration';
+            case 'PERSONNEL':
+              return '/dashboard/personnel';
+            case 'LOCAL_CONTENT_OFFICER':
+              return '/dashboard/local-content';
+            case 'JV_COORDINATOR':
+              return '/dashboard/jv-coordinator';
+            default:
+              return '/dashboard';
+          }
+        };
+        router.push(getDashboardRoute(parsedUser.role));
+        return;
+      }
+      
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      router.push('/login?redirect=/dashboard/finance');
+    }
+  }, [router]);
+
+  // Show loading state while checking authentication
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const pathname = usePathname();
+  const sidebarItems = getFinanceMenuItems(pathname);
+  
+  console.log('Finance sidebarItems:', sidebarItems);
+  console.log('Finance pathname:', pathname);
   
   // Action buttons for quick access
   const quickActions = [
@@ -69,9 +128,9 @@ export default function FinanceDashboard() {
   return (
     <DashboardLayout
       title="Finance Officer Dashboard"
-      userRole="Finance Officer"
-      userName="Michael Addo"
-      userInitials="MA"
+      userRole={user?.role || 'Finance Officer'}
+      userName={user ? `${user.firstName} ${user.lastName}` : 'Michael Addo'}
+      userInitials={user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}` : 'MA'}
       sidebarItems={sidebarItems}
     >
       <div className="space-y-6">

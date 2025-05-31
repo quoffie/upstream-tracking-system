@@ -19,6 +19,7 @@ enum UserRole {
   JV_COORDINATOR
   PERSONNEL
   FINANCE_OFFICER
+  COMMISSION_ADMIN
 }
 
 enum ApplicationStatus {

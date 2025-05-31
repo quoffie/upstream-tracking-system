@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import DashboardLayout from '../../../components/layouts/DashboardLayout';
+import { getMenuItemsByRole } from '../../../components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApplicationIcon,
@@ -521,7 +523,9 @@ const applicationTypes = [
             </button>
             <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors">
               <div className="text-center">
-                <div className="text-2xl mb-2">📊</div>
+                <div className="text-2xl mb-2">
+                  <HomeIcon className="h-8 w-8" />
+                </div>
                 <div className="font-medium text-gray-900">Application Report</div>
                 <div className="text-sm text-gray-500">Generate application summary</div>
               </div>

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function PermitApplication() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -22,6 +23,42 @@ export default function PermitApplication() {
     documents: [],
     termsAccepted: false
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (!token || !userData) {
+      // Redirect to login if not authenticated
+      router.push('/login?redirect=/apply/permit');
+      return;
+    }
+    
+    try {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      setIsAuthenticated(true);
+      
+      // Pre-fill company information if user is company admin or personnel
+      if (['COMPANY_ADMIN', 'PERSONNEL'].includes(parsedUser.role)) {
+        setFormData(prev => ({
+          ...prev,
+          companyName: parsedUser.company?.name || '',
+          companyRegistrationNumber: parsedUser.company?.registrationNumber || '',
+          contactPerson: `${parsedUser.firstName} ${parsedUser.lastName}`,
+          contactEmail: parsedUser.email,
+          contactPhone: parsedUser.phone || ''
+        }));
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      router.push('/login?redirect=/apply/permit');
+    }
+  }, [router]);
 
   const permitTypes = [
     { id: 'exploration', name: 'Exploration Permit' },
@@ -56,6 +93,18 @@ export default function PermitApplication() {
     setCurrentStep(4); // Move to confirmation step
   };
 
+  // Show loading state while checking authentication
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-800 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
@@ -65,7 +114,7 @@ export default function PermitApplication() {
             <Link href="/" className="flex items-center space-x-2">
               <div className="relative h-12 w-32">
                 <Image 
-                  src="/images/pc-ghana-logo.svg" 
+                  src="/images/pc-logo.svg" 
                   alt="Petroleum Commission Ghana Logo" 
                   fill
                   className="object-contain"
@@ -76,12 +125,24 @@ export default function PermitApplication() {
           </div>
           
           <div className="flex items-center space-x-4">
-            <Link href="/login" className="text-white hover:text-gold-500">
-              Login
+            {user && (
+              <span className="text-white">
+                Welcome, {user?.firstName || user?.name || 'User'}
+              </span>
+            )}
+            <Link href="/dashboard" className="text-white hover:text-gold-500">
+              Dashboard
             </Link>
-            <Link href="/register/company" className="bg-gold-600 hover:bg-gold-700 text-white px-4 py-2 rounded-md transition duration-300">
-              Register
-            </Link>
+            <button 
+              onClick={() => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                router.push('/login');
+              }}
+              className="bg-gold-600 hover:bg-gold-700 text-white px-4 py-2 rounded-md transition duration-300"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </nav>

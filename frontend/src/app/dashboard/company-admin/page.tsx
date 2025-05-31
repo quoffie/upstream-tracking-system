@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
+import { getCompanyAdminMenuItems } from '../../components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApplicationIcon,
@@ -45,20 +47,11 @@ const STAFF_COLORS = ['#004A7B', '#B8860B'];
 
 export default function CompanyAdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
-
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/company-admin', icon: HomeIcon, current: activeTab === 'overview' },
-    { name: 'My Applications', href: '/dashboard/company-admin/applications', icon: ApplicationIcon, current: activeTab === 'applications' },
-    { name: 'Permits', href: '/dashboard/company-admin/permits', icon: PermitIcon, current: activeTab === 'permits' },
-    { name: 'Personnel Management', href: '/dashboard/company-admin/personnel', icon: PersonnelIcon, current: activeTab === 'personnel' },
-    { name: 'Payments & Transactions', href: '/dashboard/company-admin/payments', icon: PaymentIcon, current: activeTab === 'payments' },
-    { name: 'JV Compliance', href: '/dashboard/company-admin/compliance', icon: ComplianceIcon, current: activeTab === 'compliance' },
-    { name: 'Local Content Reporting', href: '/dashboard/company-admin/local-content', icon: DocumentIcon, current: activeTab === 'local-content' },
-    { name: 'Documents & Uploads', href: '/dashboard/company-admin/documents', icon: DocumentIcon, current: activeTab === 'documents' },
-    { name: 'Notifications & Alerts', href: '/dashboard/company-admin/notifications', icon: NotificationIcon, current: activeTab === 'notifications' },
-    { name: 'Profile/Settings', href: '/dashboard/company-admin/profile', icon: ProfileIcon, current: activeTab === 'profile' },
-    { name: 'Support/Help', href: '/dashboard/company-admin/support', icon: SupportIcon, current: activeTab === 'support' },
-  ];
+  const pathname = usePathname();
+  const sidebarItems = getCompanyAdminMenuItems(pathname);
+  
+  console.log('Company Admin sidebarItems:', sidebarItems);
+  console.log('Company Admin pathname:', pathname);
 
   return (
     <DashboardLayout

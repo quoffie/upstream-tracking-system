@@ -167,42 +167,40 @@ class NotificationService {
    * @returns {string} HTML email template
    */
   createPermitStatusEmailTemplate(permit, status) {
-    return `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background-color: #003366; color: white; padding: 10px 20px; }
-          .content { padding: 20px; border: 1px solid #ddd; }
-          .footer { font-size: 12px; color: #777; margin-top: 20px; }
-          .highlight { color: #003366; font-weight: bold; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h2>Petroleum Commission Ghana</h2>
-          </div>
-          <div class="content">
-            <h3>Permit Application Status Update</h3>
-            <p>Dear Applicant,</p>
-            <p>Your permit application with reference number <span class="highlight">${permit.permitNumber}</span> has been updated.</p>
-            <p>Current Status: <span class="highlight">${status}</span></p>
-            <p>Project: ${permit.projectName || 'N/A'}</p>
-            <p>Please log in to your account on the Upstream Tracking System to view more details.</p>
-            <p>If you have any questions, please contact our support team.</p>
-            <p>Thank you,<br>Petroleum Commission Ghana</p>
-          </div>
-          <div class="footer">
-            <p>This is an automated message. Please do not reply to this email.</p>
-            <p>&copy; ${new Date().getFullYear()} Petroleum Commission Ghana. All rights reserved.</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #003366; color: white; padding: 10px 20px; }
+    .content { padding: 20px; border: 1px solid #ddd; }
+    .footer { font-size: 12px; color: #777; margin-top: 20px; }
+    .highlight { color: #003366; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Petroleum Commission Ghana</h2>
+    </div>
+    <div class="content">
+      <h3>Permit Application Status Update</h3>
+      <p>Dear Applicant,</p>
+      <p>Your permit application with reference number <span class="highlight">${permit.permitNumber}</span> has been updated.</p>
+      <p>Current Status: <span class="highlight">${status}</span></p>
+      <p>Project: ${permit.projectName || 'N/A'}</p>
+      <p>Please log in to your account on the Upstream Tracking System to view more details.</p>
+      <p>If you have any questions, please contact our support team.</p>
+      <p>Thank you,<br>Petroleum Commission Ghana</p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply to this email.</p>
+      <p>&copy; ${new Date().getFullYear()} Petroleum Commission Ghana. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`;
   }
 }
 

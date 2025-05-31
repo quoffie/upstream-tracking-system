@@ -1,8 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
+interface DemoUser {
+  email: string;
+  password: string;
+  role: string;
+  name: string;
+}
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,23 +18,92 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showDemoUsers, setShowDemoUsers] = useState(false);
+  const router = useRouter();
+  
+  // Demo users for testing
+  const demoUsers: DemoUser[] = [
+    { email: 'admin@pc-ghana.gov.gh', password: 'Admin@123', role: 'ADMIN', name: 'System Administrator' },
+    { email: 'commission-admin@pc-ghana.gov.gh', password: 'Commission@123', role: 'COMMISSION_ADMIN', name: 'Commission Administrator' },
+    { email: 'company-admin@acme.com', password: 'Company@123', role: 'COMPANY_ADMIN', name: 'Acme Manager' },
+    { email: 'company-admin@global.com', password: 'Company@123', role: 'COMPANY_ADMIN', name: 'Global Manager' },
+    { email: 'company-admin@tech.com', password: 'Company@123', role: 'COMPANY_ADMIN', name: 'Tech Manager' },
+    { email: 'reviewer@pc-ghana.gov.gh', password: 'Reviewer@123', role: 'COMPLIANCE_OFFICER', name: 'General Reviewer' },
+    { email: 'inspector@pc-ghana.gov.gh', password: 'Inspector@123', role: 'INSPECTOR', name: 'Field Inspector' },
+    { email: 'officer@immigration.gov.gh', password: 'Immigration@123', role: 'IMMIGRATION_OFFICER', name: 'Immigration Officer' },
+    { email: 'personnel@acmeoil.com', password: 'Personnel@123', role: 'PERSONNEL', name: 'John Engineer' },
+    { email: 'lc-officer@pc-ghana.gov.gh', password: 'LocalContent@123', role: 'COMPLIANCE_OFFICER', name: 'Local Content Officer' },
+    { email: 'finance@pc-ghana.gov.gh', password: 'Finance@123', role: 'FINANCE_OFFICER', name: 'Finance Officer' },
+    { email: 'compliance@pc-ghana.gov.gh', password: 'Compliance@123', role: 'COMPLIANCE_OFFICER', name: 'Compliance Officer' },
+    { email: 'jv-coordinator@pc-ghana.gov.gh', password: 'JVCoord@123', role: 'JV_COORDINATOR', name: 'JV Coordinator' },
+  ];
+
+  const selectDemoUser = (user: DemoUser) => {
+    setEmail(user.email);
+    setPassword(user.password);
+    setShowDemoUsers(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     
-    // Simulate login API call
     try {
-      // Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Make API call to login endpoint
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
       
-      // Redirect to dashboard based on user role (this is a placeholder)
-      window.location.href = '/dashboard/company';
-    } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+      
+      // Store token and user info in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // Redirect based on user role
+      const dashboardPath = getDashboardPathByRole(data.user.role);
+      router.push(dashboardPath);
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+  
+  // Helper function to determine dashboard path based on user role
+  const getDashboardPathByRole = (role: string): string => {
+    switch (role) {
+      case 'ADMIN':
+        return '/dashboard/admin';
+      case 'COMPANY_ADMIN':
+        return '/dashboard/company-admin';
+      case 'COMPLIANCE_OFFICER':
+        return '/dashboard/reviewer';
+      case 'INSPECTOR':
+        return '/dashboard/inspector';
+      case 'IMMIGRATION_OFFICER':
+        return '/dashboard/immigration';
+      case 'PERSONNEL':
+        return '/dashboard/personnel';
+      case 'LOCAL_CONTENT_OFFICER':
+        return '/dashboard/local-content';
+      case 'FINANCE_OFFICER':
+        return '/dashboard/finance';
+      case 'JV_COORDINATOR':
+        return '/dashboard/jv-coordinator';
+      case 'COMMISSION_ADMIN':
+        return '/dashboard/admin';
+      default:
+        return '/dashboard';
     }
   };
 
@@ -142,24 +219,62 @@ export default function Login() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  Or continue with
+                  Or use a demo account
                 </span>
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-3">
-              <div>
-                <a
-                  href="#"
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  <span className="sr-only">Sign in with Ghana.gov</span>
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clipRule="evenodd" />
-                  </svg>
-                  <span className="ml-2">Ghana.gov</span>
-                </a>
-              </div>
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={() => setShowDemoUsers(!showDemoUsers)}
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-500"
+              >
+                {showDemoUsers ? 'Hide Demo Users' : 'Show Demo Users'}
+              </button>
+              
+              {showDemoUsers && (
+                <div className="mt-3 border border-gray-200 rounded-md overflow-hidden">
+                  <div className="max-h-60 overflow-y-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50 sticky top-0">
+                        <tr>
+                          <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Role
+                          </th>
+                          <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Email
+                          </th>
+                          <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {demoUsers.map((user, index) => (
+                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-900">
+                              {user.role.replace('_', ' ')}
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap text-xs text-gray-500">
+                              {user.email}
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap text-xs">
+                              <button
+                                type="button"
+                                onClick={() => selectDemoUser(user)}
+                                className="text-blue-600 hover:text-blue-800 font-medium"
+                              >
+                                Select
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

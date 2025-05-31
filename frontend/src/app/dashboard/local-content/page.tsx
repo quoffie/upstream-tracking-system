@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
+import { getLocalContentMenuItems } from '../../components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApplicationIcon,
@@ -42,18 +44,11 @@ const COLORS = ['#00C49F', '#FF8042', '#FFBB28', '#0088FE'];
 
 export default function LocalContentDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
-
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/local-content', icon: HomeIcon, current: activeTab === 'overview' },
-    { name: 'Company Compliance', href: '/dashboard/local-content/compliance', icon: ComplianceIcon, current: activeTab === 'compliance' },
-    { name: 'Local Content Reports', href: '/dashboard/local-content/reports', icon: DocumentIcon, current: activeTab === 'reports' },
-    { name: 'Compliance Analytics', href: '/dashboard/local-content/analytics', icon: AnalyticsIcon, current: activeTab === 'analytics' },
-    { name: 'Non-Compliance Notices', href: '/dashboard/local-content/notices', icon: HistoryIcon, current: activeTab === 'notices' },
-    { name: 'Audit Logs', href: '/dashboard/local-content/audit', icon: AuditIcon, current: activeTab === 'audit' },
-    { name: 'Notifications', href: '/dashboard/local-content/notifications', icon: NotificationIcon, current: activeTab === 'notifications' },
-    { name: 'Profile/Settings', href: '/dashboard/local-content/profile', icon: ProfileIcon, current: activeTab === 'profile' },
-    { name: 'Help/Support', href: '/dashboard/local-content/support', icon: SupportIcon, current: activeTab === 'support' },
-  ];
+  const pathname = usePathname();
+  const sidebarItems = getLocalContentMenuItems(pathname);
+  
+  console.log('Local Content sidebarItems:', sidebarItems);
+  console.log('Local Content pathname:', pathname);
   
   // Action buttons for quick access
   const quickActions = [

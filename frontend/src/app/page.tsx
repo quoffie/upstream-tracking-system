@@ -111,7 +111,7 @@ export default function Home() {
                 Register Company
               </Link>
               <Link 
-                href="/apply/permit" 
+                href="/register" 
                 className="bg-white/90 hover:bg-white text-blue-800 px-6 py-3 rounded-md text-center transition duration-300 shadow-lg transform hover:-translate-y-1 backdrop-blur-sm"
               >
                 Apply for Permit

@@ -6,7 +6,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3011:3000"
+      - "3020:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -14,14 +14,15 @@ services:
       - backend
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:5011/api
+      - NEXT_PUBLIC_API_URL=http://backend:5000/api
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5011:5000"
+      - "5020:5000"
+      - "5555:5555"
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -31,13 +32,13 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pcots
-      - JWT_SECRET=your_jwt_secret_key_here
+      - JWT_SECRET=pc-ots-secret-key-change-in-production
       - PORT=5000
 
   postgres:
     image: postgres:14
     ports:
-      - "5443:5432"
+      - "5450:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -48,8 +49,8 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "1036:1025" # SMTP server
-      - "8036:8025" # Web UI
+      - "1040:1025" # SMTP server
+      - "8040:8025" # Web UI
 
 volumes:
   postgres_data:

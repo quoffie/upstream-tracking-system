@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
+import { getImmigrationMenuItems } from '../../components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApprovalIcon,
@@ -48,19 +50,11 @@ const COLORS = ['#0088FE', '#FFBB28', '#FF8042', '#00C49F'];
 
 export default function ImmigrationDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
-
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/immigration', icon: HomeIcon, current: activeTab === 'overview' },
-    { name: 'Permit Approvals', href: '/dashboard/immigration/approvals', icon: ApprovalIcon, current: activeTab === 'approvals' },
-    { name: 'Application Review', href: '/dashboard/immigration/applications', icon: ApplicationIcon, current: activeTab === 'applications' },
-    { name: 'Workflow Status', href: '/dashboard/immigration/workflow', icon: WorkflowIcon, current: activeTab === 'workflow' },
-    { name: 'Issued Permits', href: '/dashboard/immigration/permits', icon: PermitIcon, current: activeTab === 'permits' },
-    { name: 'Approval History', href: '/dashboard/immigration/history', icon: HistoryIcon, current: activeTab === 'history' },
-    { name: 'Reports', href: '/dashboard/immigration/reports', icon: ReportIcon, current: activeTab === 'reports' },
-    { name: 'Notifications', href: '/dashboard/immigration/notifications', icon: NotificationIcon, current: activeTab === 'notifications' },
-    { name: 'Audit Logs', href: '/dashboard/immigration/audit', icon: AuditIcon, current: activeTab === 'audit' },
-    { name: 'Profile/Settings', href: '/dashboard/immigration/profile', icon: ProfileIcon, current: activeTab === 'profile' },
-  ];
+  const pathname = usePathname();
+  const sidebarItems = getImmigrationMenuItems(pathname);
+  
+  console.log('Immigration sidebarItems:', sidebarItems);
+  console.log('Immigration pathname:', pathname);
 
   return (
     <DashboardLayout

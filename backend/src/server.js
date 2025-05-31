@@ -23,17 +23,36 @@ const cronService = require('./services/cron.service');
 // Initialize Express app
 const app = express();
 
-// Initialize Prisma client
-const prisma = new PrismaClient();
+// Initialize Prisma client with error handling
+let prisma;
+try {
+  prisma = new PrismaClient();
+  console.log('Prisma client initialized successfully');
+} catch (error) {
+  console.error('Failed to initialize Prisma client:', error.message);
+  prisma = null;
+}
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Add Prisma to request object
+// Add Prisma to request object with error handling
 app.use((req, res, next) => {
   req.prisma = prisma;
+  req.prismaAvailable = prisma !== null;
+  next();
+});
+
+// Middleware to check Prisma availability for database operations
+app.use('/api', (req, res, next) => {
+  if (!req.prismaAvailable && req.method !== 'GET') {
+    return res.status(503).json({ 
+      error: 'Database service temporarily unavailable',
+      message: 'Prisma client initialization failed'
+    });
+  }
   next();
 });
 
