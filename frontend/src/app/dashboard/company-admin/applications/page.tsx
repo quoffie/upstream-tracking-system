@@ -1,45 +1,29 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import DashboardLayout from '../../../components/layouts/DashboardLayout';
-import { getMenuItemsByRole } from '../../../components/layouts/DashboardMenus';
-import {
-  HomeIcon,
-  ApplicationIcon,
-  PermitIcon,
-  PersonnelIcon,
-  PaymentIcon,
-  ComplianceIcon,
-  DocumentIcon,
-  NotificationIcon,
-  ProfileIcon,
-  SupportIcon,
-  FileTextIcon, // Added for Regular Permit
-  RefreshCwIcon // Added for Rotator Permit
-} from '../../../components/icons/DashboardIcons';
-import Link from 'next/link'; // Added for navigation
+import { getCompanyAdminMenuItems } from '../../../components/layouts/DashboardMenus';
+import { 
+  DocumentPlusIcon, 
+  EyeIcon, 
+  PencilIcon, 
+  ClockIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ExclamationTriangleIcon
+} from '@heroicons/react/24/outline';
+import { FileTextIcon, RefreshCwIcon, PermitIcon, HomeIcon } from '../../../components/icons/DashboardIcons';
 
-export default function MyApplicationsPage() {
+export default function ApplicationsPage() {
+  const pathname = usePathname();
+  const sidebarItems = getCompanyAdminMenuItems(pathname);
   const [activeTab, setActiveTab] = useState('applications');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTimeframe, setSelectedTimeframe] = useState('all');
-
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/company-admin', icon: HomeIcon, current: activeTab === 'overview' },
-    { name: 'My Applications', href: '/dashboard/company-admin/applications', icon: ApplicationIcon, current: activeTab === 'applications' },
-    { name: 'Permits', href: '/dashboard/company-admin/permits', icon: PermitIcon, current: activeTab === 'permits' },
-    { name: 'Personnel Management', href: '/dashboard/company-admin/personnel', icon: PersonnelIcon, current: activeTab === 'personnel' },
-    { name: 'Payments & Transactions', href: '/dashboard/company-admin/payments', icon: PaymentIcon, current: activeTab === 'payments' },
-    { name: 'JV Compliance', href: '/dashboard/company-admin/compliance', icon: ComplianceIcon, current: activeTab === 'compliance' },
-    { name: 'Local Content Reporting', href: '/dashboard/company-admin/local-content', icon: DocumentIcon, current: activeTab === 'local-content' },
-    { name: 'Documents & Uploads', href: '/dashboard/company-admin/documents', icon: DocumentIcon, current: activeTab === 'documents' },
-    { name: 'Notifications & Alerts', href: '/dashboard/company-admin/notifications', icon: NotificationIcon, current: activeTab === 'notifications' },
-    { name: 'Profile/Settings', href: '/dashboard/company-admin/profile', icon: ProfileIcon, current: activeTab === 'profile' },
-    { name: 'Support/Help', href: '/dashboard/company-admin/support', icon: SupportIcon, current: activeTab === 'support' },
-  ];
 
   // Mock data for applications
   const applications = [
@@ -263,7 +247,13 @@ const applicationTypes = [
   };
 
   return (
-    <DashboardLayout sidebarItems={sidebarItems} title="Manage Applications" userRole="Company Admin">
+    <DashboardLayout
+      title="Applications Management"
+      userRole="Company Admin"
+      userName="Acme Corporation"
+      userInitials="AC"
+      sidebarItems={sidebarItems}
+    >
       <div className="p-6 bg-gray-50 min-h-screen">
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Manage Applications</h1>

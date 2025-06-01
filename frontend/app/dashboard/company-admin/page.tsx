@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardLayout from '../../../src/app/components/layouts/DashboardLayout';
-import { getMenuItemsByRole } from '../../../src/app/components/layouts/DashboardMenus';
+import EnhancedDashboardLayout from '../../../src/app/components/layouts/EnhancedDashboardLayout';
+import { getCompanyAdminMenuItems } from '../../../src/app/components/layouts/DashboardMenus';
+import { usePathname } from 'next/navigation';
 import { HomeIcon } from '../../../src/app/components/icons/DashboardIcons';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -11,6 +12,7 @@ export default function CompanyAdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -83,15 +85,7 @@ export default function CompanyAdminDashboard() {
     { id: 'PER-2023-048', employee: 'Daniel Lee', position: 'QA Engineer', expiryDate: '2024-02-25', daysLeft: 35, status: 'Active' }
   ];
 
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/company-admin', icon: HomeIcon, current: true },
-    { name: 'Applications', href: '/dashboard/company-admin/applications', icon: HomeIcon, current: false },
-    { name: 'Employees', href: '/dashboard/company-admin/employees', icon: HomeIcon, current: false },
-    { name: 'Permits', href: '/dashboard/company-admin/permits', icon: HomeIcon, current: false },
-    { name: 'Reports', href: '/dashboard/company-admin/reports', icon: HomeIcon, current: false },
-    { name: 'Payments', href: '/dashboard/company-admin/payments', icon: HomeIcon, current: false },
-    { name: 'Settings', href: '/dashboard/company-admin/settings', icon: HomeIcon, current: false }
-  ];
+
 
   if (!isAuthenticated) {
     return (
@@ -105,82 +99,110 @@ export default function CompanyAdminDashboard() {
   }
 
   return (
-    <DashboardLayout
-      title="Company Admin Dashboard"
+    <EnhancedDashboardLayout
+        title="Company Admin Dashboard"
       userRole={user?.role}
       userName={`${user?.firstName} ${user?.lastName}`}
       userInitials={`${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`}
-      sidebarItems={sidebarItems}
+      sidebarItems={getCompanyAdminMenuItems(pathname)}
     >
       <div className="space-y-6">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">📝</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Total Applications</dt>
-                    <dd className="text-lg font-medium text-gray-900">56</dd>
+                    <dd className="flex items-center">
+                      <span className="text-2xl font-bold text-gray-900">56</span>
+                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        Active
+                      </span>
+                    </dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">✅</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Approved</dt>
-                    <dd className="text-lg font-medium text-gray-900">25</dd>
+                    <dd className="flex items-center">
+                      <span className="text-2xl font-bold text-gray-900">25</span>
+                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        +15%
+                      </span>
+                    </dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">⏳</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Pending Review</dt>
-                    <dd className="text-lg font-medium text-gray-900">23</dd>
+                    <dd className="flex items-center">
+                      <span className="text-2xl font-bold text-gray-900">23</span>
+                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        Review Required
+                      </span>
+                    </dd>
                   </dl>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">⚠️</span>
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Expiring Soon</dt>
-                    <dd className="text-lg font-medium text-gray-900">8</dd>
+                    <dd className="flex items-center">
+                      <span className="text-2xl font-bold text-gray-900">8</span>
+                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        Urgent
+                      </span>
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -354,6 +376,6 @@ export default function CompanyAdminDashboard() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </EnhancedDashboardLayout>
   );
 }

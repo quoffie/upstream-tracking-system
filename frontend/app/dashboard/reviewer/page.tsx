@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardLayout from '../../../src/app/components/layouts/DashboardLayout';
-import { getMenuItemsByRole } from '../../../src/app/components/layouts/DashboardMenus';
+import EnhancedDashboardLayout from '../../../src/app/components/layouts/EnhancedDashboardLayout';
+import { getInspectorMenuItems } from '../../../src/app/components/layouts/DashboardMenus';
+import { usePathname } from 'next/navigation';
 import { HomeIcon } from '../../../src/app/components/icons/DashboardIcons';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 
@@ -13,6 +14,7 @@ export default function ReviewerDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -92,15 +94,7 @@ export default function ReviewerDashboard() {
     { id: 'APP-2024-013', company: 'Refinery Operations', applicant: 'Daniel Lee', position: 'Process Engineer', decision: 'Rejected', reviewedDate: '2024-01-17', reviewer: 'You' }
   ];
 
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/reviewer', icon: HomeIcon, current: true },
-    { name: 'Pending Reviews', href: '/dashboard/reviewer/pending', icon: HomeIcon, current: false },
-    { name: 'Review History', href: '/dashboard/reviewer/history', icon: HomeIcon, current: false },
-    { name: 'Compliance Reports', href: '/dashboard/reviewer/compliance', icon: HomeIcon, current: false },
-    { name: 'Guidelines', href: '/dashboard/reviewer/guidelines', icon: HomeIcon, current: false },
-    { name: 'Templates', href: '/dashboard/reviewer/templates', icon: HomeIcon, current: false },
-    { name: 'Settings', href: '/dashboard/reviewer/settings', icon: HomeIcon, current: false }
-  ];
+
 
   if (!isAuthenticated) {
     return (
@@ -114,12 +108,12 @@ export default function ReviewerDashboard() {
   }
 
   return (
-    <DashboardLayout
-      title="Reviewer Dashboard"
+    <EnhancedDashboardLayout
+        title="Reviewer Dashboard"
       userRole={user?.role}
       userName={`${user?.firstName} ${user?.lastName}`}
       userInitials={`${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`}
-      sidebarItems={sidebarItems}
+      sidebarItems={getInspectorMenuItems(pathname)}
     >
       <div className="space-y-6">
         {/* Stats Overview */}
@@ -397,6 +391,6 @@ export default function ReviewerDashboard() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </EnhancedDashboardLayout>
   );
 }

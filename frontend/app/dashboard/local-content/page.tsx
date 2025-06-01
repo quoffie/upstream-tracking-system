@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardLayout from '../../../src/app/components/layouts/DashboardLayout';
-import { getMenuItemsByRole } from '../../../src/app/components/layouts/DashboardMenus';
+import EnhancedDashboardLayout from '../../../src/app/components/layouts/EnhancedDashboardLayout';
+import { getLocalContentMenuItems } from '../../../src/app/components/layouts/DashboardMenus';
+import { usePathname } from 'next/navigation';
 import { HomeIcon } from '../../../src/app/components/icons/DashboardIcons';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
 
@@ -11,6 +12,7 @@ export default function LocalContentDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -93,7 +95,7 @@ export default function LocalContentDashboard() {
     { name: 'Dashboard', href: '/dashboard/local-content', icon: HomeIcon, current: true },
   ];
 
-  const sidebarItems = getMenuItemsByRole('LOCAL_CONTENT_OFFICER', '/dashboard/local-content');
+
 
   if (!isAuthenticated) {
     return (
@@ -107,12 +109,12 @@ export default function LocalContentDashboard() {
   }
 
   return (
-    <DashboardLayout
-      title="Local Content Dashboard"
+    <EnhancedDashboardLayout
+        title="Local Content Dashboard"
       userRole={user?.role}
       userName={`${user?.firstName} ${user?.lastName}`}
       userInitials={`${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`}
-      sidebarItems={sidebarItems}
+      sidebarItems={getLocalContentMenuItems(pathname)}
     >
       <div className="space-y-6">
         {/* Stats Overview */}
@@ -406,6 +408,6 @@ export default function LocalContentDashboard() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </EnhancedDashboardLayout>
   );
 }

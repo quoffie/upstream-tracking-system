@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
-import { getReviewerMenuItems } from '../../components/layouts/DashboardMenus';
+import { getCommissionAdminMenuItems } from '../../components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ReviewIcon,
@@ -105,7 +105,7 @@ export default function ReviewerDashboard() {
   }
 
   const pathname = usePathname();
-  const sidebarItems = getReviewerMenuItems(pathname);
+  const sidebarItems = getCommissionAdminMenuItems(pathname);
   
   console.log('Reviewer sidebarItems:', sidebarItems);
   console.log('Reviewer pathname:', pathname);

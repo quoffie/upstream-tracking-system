@@ -25,16 +25,12 @@ export default function Login() {
   const demoUsers: DemoUser[] = [
     { email: 'admin@pc-ghana.gov.gh', password: 'Admin@123', role: 'ADMIN', name: 'System Administrator' },
     { email: 'commission-admin@pc-ghana.gov.gh', password: 'Commission@123', role: 'COMMISSION_ADMIN', name: 'Commission Administrator' },
-    { email: 'company-admin@acme.com', password: 'Company@123', role: 'COMPANY_ADMIN', name: 'Acme Manager' },
-    { email: 'company-admin@global.com', password: 'Company@123', role: 'COMPANY_ADMIN', name: 'Global Manager' },
-    { email: 'company-admin@tech.com', password: 'Company@123', role: 'COMPANY_ADMIN', name: 'Tech Manager' },
-    { email: 'reviewer@pc-ghana.gov.gh', password: 'Reviewer@123', role: 'COMPLIANCE_OFFICER', name: 'General Reviewer' },
+    { email: 'company-admin@acme.com', password: 'Company@123', role: 'COMPANY_ADMIN', name: 'Company Manager' },
+    { email: 'compliance@pc-ghana.gov.gh', password: 'Compliance@123', role: 'COMPLIANCE_OFFICER', name: 'Compliance Officer' },
     { email: 'inspector@pc-ghana.gov.gh', password: 'Inspector@123', role: 'INSPECTOR', name: 'Field Inspector' },
     { email: 'officer@immigration.gov.gh', password: 'Immigration@123', role: 'IMMIGRATION_OFFICER', name: 'Immigration Officer' },
     { email: 'personnel@acmeoil.com', password: 'Personnel@123', role: 'PERSONNEL', name: 'John Engineer' },
-    { email: 'lc-officer@pc-ghana.gov.gh', password: 'LocalContent@123', role: 'COMPLIANCE_OFFICER', name: 'Local Content Officer' },
     { email: 'finance@pc-ghana.gov.gh', password: 'Finance@123', role: 'FINANCE_OFFICER', name: 'Finance Officer' },
-    { email: 'compliance@pc-ghana.gov.gh', password: 'Compliance@123', role: 'COMPLIANCE_OFFICER', name: 'Compliance Officer' },
     { email: 'jv-coordinator@pc-ghana.gov.gh', password: 'JVCoord@123', role: 'JV_COORDINATOR', name: 'JV Coordinator' },
   ];
 
@@ -84,6 +80,8 @@ export default function Login() {
     switch (role) {
       case 'ADMIN':
         return '/dashboard/admin';
+      case 'COMMISSION_ADMIN':
+        return '/dashboard/commission-admin';
       case 'COMPANY_ADMIN':
         return '/dashboard/company-admin';
       case 'COMPLIANCE_OFFICER':
@@ -100,8 +98,6 @@ export default function Login() {
         return '/dashboard/finance';
       case 'JV_COORDINATOR':
         return '/dashboard/jv-coordinator';
-      case 'COMMISSION_ADMIN':
-        return '/dashboard/admin';
       default:
         return '/dashboard';
     }

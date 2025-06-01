@@ -1,40 +1,28 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import DashboardLayout from '../../../components/layouts/DashboardLayout';
-import {
-  HomeIcon,
-  ApplicationIcon,
-  PermitIcon,
-  PersonnelIcon,
-  PaymentIcon,
-  ComplianceIcon,
-  DocumentIcon,
-  NotificationIcon,
-  ProfileIcon,
-  SupportIcon
-} from '../../../components/icons/DashboardIcons';
+import { getCompanyAdminMenuItems } from '../../../components/layouts/DashboardMenus';
+import { 
+  DocumentTextIcon, 
+  CalendarIcon, 
+  ExclamationTriangleIcon, 
+  CheckCircleIcon,
+  ClockIcon,
+  XCircleIcon,
+  ArrowDownTrayIcon,
+  PlusIcon
+} from '@heroicons/react/24/outline';
 
 export default function PermitsPage() {
+  const pathname = usePathname();
+  const sidebarItems = getCompanyAdminMenuItems(pathname);
   const [activeTab, setActiveTab] = useState('permits');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTimeframe, setSelectedTimeframe] = useState('all');
-
-  const sidebarItems = [
-    { name: 'Dashboard', href: '/dashboard/company-admin', icon: HomeIcon, current: activeTab === 'overview' },
-    { name: 'My Applications', href: '/dashboard/company-admin/applications', icon: ApplicationIcon, current: activeTab === 'applications' },
-    { name: 'Permits', href: '/dashboard/company-admin/permits', icon: PermitIcon, current: activeTab === 'permits' },
-    { name: 'Personnel Management', href: '/dashboard/company-admin/personnel', icon: PersonnelIcon, current: activeTab === 'personnel' },
-    { name: 'Payments & Transactions', href: '/dashboard/company-admin/payments', icon: PaymentIcon, current: activeTab === 'payments' },
-    { name: 'JV Compliance', href: '/dashboard/company-admin/compliance', icon: ComplianceIcon, current: activeTab === 'compliance' },
-    { name: 'Local Content Reporting', href: '/dashboard/company-admin/local-content', icon: DocumentIcon, current: activeTab === 'local-content' },
-    { name: 'Documents & Uploads', href: '/dashboard/company-admin/documents', icon: DocumentIcon, current: activeTab === 'documents' },
-    { name: 'Notifications & Alerts', href: '/dashboard/company-admin/notifications', icon: NotificationIcon, current: activeTab === 'notifications' },
-    { name: 'Profile/Settings', href: '/dashboard/company-admin/profile', icon: ProfileIcon, current: activeTab === 'profile' },
-    { name: 'Support/Help', href: '/dashboard/company-admin/support', icon: SupportIcon, current: activeTab === 'support' },
-  ];
 
   // Mock data for permits
   const permits = [

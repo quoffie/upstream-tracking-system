@@ -3,6 +3,16 @@
 import { ReactNode, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ChevronDownIcon, ChevronRightIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { handleLogout } from './DashboardMenus';
+
+interface MenuItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  current: boolean;
+  children?: MenuItem[];
+}
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -10,12 +20,7 @@ interface DashboardLayoutProps {
   userRole: string;
   userName?: string;
   userInitials?: string;
-  sidebarItems: {
-    name: string;
-    href: string;
-    icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
-    current: boolean;
-  }[];
+  sidebarItems: MenuItem[];
 }
 
 export default function DashboardLayout({
@@ -27,7 +32,75 @@ export default function DashboardLayout({
   sidebarItems,
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
+  // Toggle expanded state for menu items with children
+  const toggleExpanded = (itemName: string) => {
+    setExpandedItems(prev => 
+      prev.includes(itemName) 
+        ? prev.filter(name => name !== itemName)
+        : [...prev, itemName]
+    );
+  };
+
+  // Render menu item with optional children
+  const renderMenuItem = (item: MenuItem, isMobile = false) => {
+    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = expandedItems.includes(item.name);
+    
+    return (
+      <div key={item.name}>
+        {hasChildren ? (
+          <button
+            onClick={() => toggleExpanded(item.name)}
+            className={`flex items-center justify-between w-full px-4 py-3 text-left ${
+              item.current ? 'bg-blue-100 text-blue-800 border-r-4 border-blue-800' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <div className="flex items-center">
+              <item.icon className="h-5 w-5 mr-3" aria-hidden="true" />
+              {item.name}
+            </div>
+            {isExpanded ? (
+              <ChevronDownIcon className="h-4 w-4" />
+            ) : (
+              <ChevronRightIcon className="h-4 w-4" />
+            )}
+          </button>
+        ) : (
+          <Link 
+            href={item.href}
+            className={`flex items-center w-full px-4 py-3 ${
+              item.current ? 'bg-blue-100 text-blue-800 border-r-4 border-blue-800' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+            onClick={isMobile ? () => setSidebarOpen(false) : undefined}
+          >
+            <item.icon className="h-5 w-5 mr-3" aria-hidden="true" />
+            {item.name}
+          </Link>
+        )}
+        
+        {hasChildren && isExpanded && (
+          <div className="bg-gray-50">
+            {item.children!.map((child) => (
+              <Link
+                key={child.name}
+                href={child.href}
+                className={`flex items-center w-full px-8 py-2 text-sm ${
+                  child.current ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                onClick={isMobile ? () => setSidebarOpen(false) : undefined}
+              >
+                <child.icon className="h-4 w-4 mr-2" aria-hidden="true" />
+                {child.name}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Debug: Log sidebar items in DashboardLayout
   console.log('DashboardLayout received sidebarItems:', sidebarItems);
   console.log('Number of sidebar items:', sidebarItems?.length);
@@ -56,22 +129,31 @@ export default function DashboardLayout({
           </div>
           
           <div className="flex items-center space-x-4">
-            <div className="relative">
-              <button className="text-white hover:text-gold-500">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-              </button>
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full bg-gold-600 flex items-center justify-center text-white font-bold">
-                {userInitials}
+              <div className="relative">
+                <button className="text-white hover:text-gold-500">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                </button>
+                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
               </div>
-              <span className="hidden md:block">{userName || userRole}</span>
+              
+              <div className="flex items-center space-x-2">
+                <div className="h-8 w-8 rounded-full bg-gold-600 flex items-center justify-center text-white font-bold">
+                  {userInitials}
+                </div>
+                <span className="hidden md:block">{userName || userRole}</span>
+              </div>
+              
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-1 text-white hover:text-gold-500 transition-colors"
+                title="Logout"
+              >
+                <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                <span className="hidden lg:block">Logout</span>
+              </button>
             </div>
-          </div>
         </div>
       </nav>
 
@@ -118,27 +200,17 @@ export default function DashboardLayout({
                 />
               </div>
             </div>
-            <nav className="mt-5 px-2 space-y-1">
-              {sidebarItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`group flex items-center px-2 py-2 text-base font-medium rounded-md ${item.current ? 'bg-blue-100 text-blue-800' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  {typeof item.icon === 'string' ? (
-                    <span className={`mr-4 flex-shrink-0 h-6 w-6 flex items-center justify-center text-lg ${item.current ? 'text-blue-800' : 'text-gray-400 group-hover:text-gray-500'}`}>
-                      {item.icon}
-                    </span>
-                  ) : (
-                    <item.icon
-                      className={`mr-4 flex-shrink-0 h-6 w-6 ${item.current ? 'text-blue-800' : 'text-gray-400 group-hover:text-gray-500'}`}
-                      aria-hidden="true"
-                    />
-                  )}
-                  {item.name}
-                </Link>
-              ))}
+            <nav className="mt-5 space-y-1">
+              {sidebarItems.map((item) => renderMenuItem(item, true))}
+              
+              {/* Logout button for mobile */}
+              <button
+                onClick={handleLogout}
+                className="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-100"
+              >
+                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-3" aria-hidden="true" />
+                Logout
+              </button>
             </nav>
           </div>
         </div>
@@ -146,30 +218,25 @@ export default function DashboardLayout({
 
       <div className="flex">
         {/* Desktop Sidebar Navigation */}
-        <aside className="w-64 bg-white shadow-md h-screen sticky top-0 hidden md:block">
+        <aside className="w-64 bg-white shadow-md h-screen sticky top-0 hidden md:block relative">
           <div className="p-4">
             <h2 className="text-lg font-semibold text-blue-800">{title}</h2>
           </div>
-          <nav className="mt-4">
-            <ul>
-              {sidebarItems.map((item) => (
-                <li key={item.name}>
-                  <Link 
-                    href={item.href}
-                    className={`flex items-center w-full px-4 py-3 ${item.current ? 'bg-blue-100 text-blue-800 border-r-4 border-blue-800' : 'text-gray-600 hover:bg-gray-100'}`}
-                  >
-                    {typeof item.icon === 'string' ? (
-                      <span className="h-5 w-5 mr-3 flex items-center justify-center text-sm">
-                        {item.icon}
-                      </span>
-                    ) : (
-                      <item.icon className="h-5 w-5 mr-3" aria-hidden="true" />
-                    )}
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <nav className="mt-4 flex-1 overflow-y-auto">
+            <div className="space-y-1">
+              {sidebarItems.map((item) => renderMenuItem(item))}
+            </div>
+            
+            {/* Logout button at bottom of sidebar */}
+            <div className="absolute bottom-4 left-0 right-0 px-4">
+              <button
+                onClick={handleLogout}
+                className="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-3" aria-hidden="true" />
+                Logout
+              </button>
+            </div>
           </nav>
         </aside>
 

@@ -6,11 +6,7 @@ import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentYear, setCurrentYear] = useState(2024);
-
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   return (
     <main className="min-h-screen bg-white">
