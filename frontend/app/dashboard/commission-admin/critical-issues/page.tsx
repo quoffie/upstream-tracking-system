@@ -21,7 +21,7 @@ export default function CriticalIssuesPage() {
     {
       id: 1,
       title: 'Environmental Compliance Violation',
-      company: 'Shell Nigeria',
+      company: 'Tullow Ghana',
       severity: 'Critical',
       status: 'Under Investigation',
       daysOpen: 12,
@@ -33,7 +33,7 @@ export default function CriticalIssuesPage() {
     {
       id: 2,
       title: 'Safety Protocol Breach',
-      company: 'Chevron Nigeria',
+      company: 'Kosmos Energy Ghana',
       severity: 'High',
       status: 'Pending Review',
       daysOpen: 8,
@@ -45,7 +45,7 @@ export default function CriticalIssuesPage() {
     {
       id: 3,
       title: 'License Renewal Overdue',
-      company: 'Total E&P Nigeria',
+      company: 'Eni Ghana',
       severity: 'High',
       status: 'Awaiting Documentation',
       daysOpen: 15,
@@ -57,7 +57,7 @@ export default function CriticalIssuesPage() {
     {
       id: 4,
       title: 'Production Quota Exceeded',
-      company: 'ExxonMobil Nigeria',
+      company: 'Hess Ghana',
       severity: 'Medium',
       status: 'Escalated to CEO',
       daysOpen: 5,
@@ -69,7 +69,7 @@ export default function CriticalIssuesPage() {
     {
       id: 5,
       title: 'Financial Audit Discrepancy',
-      company: 'Eni Nigeria',
+      company: 'GNPC Exploration',
       severity: 'Critical',
       status: 'Under Review',
       daysOpen: 20,

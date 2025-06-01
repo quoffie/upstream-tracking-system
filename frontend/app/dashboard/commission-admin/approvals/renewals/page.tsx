@@ -65,7 +65,7 @@ export default function RenewalsApproval() {
         renewalPeriod: '3 years',
         priority: 'high',
         blocks: ['Block 15A', 'Block 16B', 'Block 17C'],
-        fees: '$125,000',
+        fees: 'GH₵125,000',
         complianceStatus: 'compliant'
       },
       {
@@ -81,7 +81,7 @@ export default function RenewalsApproval() {
         renewalPeriod: '4 years',
         priority: 'medium',
         blocks: ['Block 8B', 'Block 9C'],
-        fees: '$89,500',
+        fees: 'GH₵89,500',
         complianceStatus: 'pending_review'
       },
       {
@@ -97,7 +97,7 @@ export default function RenewalsApproval() {
         renewalPeriod: '5 years',
         priority: 'high',
         blocks: ['Block 22C', 'Block 23D', 'Block 24E', 'Block 25F'],
-        fees: '$200,000',
+        fees: 'GH₵200,000',
         complianceStatus: 'compliant'
       },
       {
@@ -113,7 +113,7 @@ export default function RenewalsApproval() {
         renewalPeriod: '3 years',
         priority: 'low',
         blocks: ['Block 5D', 'Block 6E'],
-        fees: '$45,000',
+        fees: 'GH₵45,000',
         complianceStatus: 'non_compliant'
       },
       {
@@ -129,7 +129,7 @@ export default function RenewalsApproval() {
         renewalPeriod: '4 years',
         priority: 'medium',
         blocks: ['Block 11F', 'Block 12G'],
-        fees: '$75,000',
+        fees: 'GH₵75,000',
         complianceStatus: 'compliant'
       },
       {
@@ -145,7 +145,7 @@ export default function RenewalsApproval() {
         renewalPeriod: '3 years',
         priority: 'high',
         blocks: ['Block 18H', 'Block 19I'],
-        fees: '$95,000',
+        fees: 'GH₵95,000',
         complianceStatus: 'pending_review'
       }
     ];

@@ -33,7 +33,7 @@ router.post('/create', authenticate, async (req, res) => {
         applicationId,
         companyId: user.company.id,
         amount: parseFloat(amount),
-        currency: currency || 'NGN',
+        currency: currency || 'GHS',
         description,
         paymentMethod,
         paymentReference,
@@ -47,7 +47,7 @@ router.post('/create', authenticate, async (req, res) => {
       data: {
         type: 'PAYMENT_CREATED',
         title: 'Payment Created',
-        message: `Payment of ${currency || 'NGN'} ${amount} has been created with reference ${paymentReference}`,
+        message: `Payment of ${currency || 'GHS'} ${amount} has been created with reference ${paymentReference}`,
         companyId: user.company.id,
         relatedId: payment.id
       }

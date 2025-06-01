@@ -66,7 +66,7 @@ export default function JVApprovals() {
         },
         priority: 'high',
         blocks: ['Block 15A', 'Block 16B', 'Block 17C'],
-        estimatedValue: '$125M'
+        estimatedValue: 'GH₵125M'
       },
       {
         id: '2',
@@ -84,7 +84,7 @@ export default function JVApprovals() {
         },
         priority: 'medium',
         blocks: ['Block 8B', 'Block 9C'],
-        estimatedValue: '$89M'
+        estimatedValue: 'GH₵89M'
       },
       {
         id: '3',
@@ -102,7 +102,7 @@ export default function JVApprovals() {
         },
         priority: 'high',
         blocks: ['Block 22C', 'Block 23D', 'Block 24E'],
-        estimatedValue: '$200M'
+        estimatedValue: 'GH₵200M'
       },
       {
         id: '4',
@@ -119,7 +119,7 @@ export default function JVApprovals() {
         },
         priority: 'low',
         blocks: ['Block 5D'],
-        estimatedValue: '$45M'
+        estimatedValue: 'GH₵45M'
       },
       {
         id: '5',
@@ -138,7 +138,7 @@ export default function JVApprovals() {
         },
         priority: 'medium',
         blocks: ['Block 11F', 'Block 12G', 'Block 13H'],
-        estimatedValue: '$175M'
+        estimatedValue: 'GH₵175M'
       }
     ];
 

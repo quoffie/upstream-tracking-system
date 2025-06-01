@@ -121,7 +121,7 @@ export default function FinancialsPage() {
               <CurrencyDollarIcon className="h-8 w-8 text-green-600" />
               <div className="ml-4">
                 <h3 className="text-lg font-medium text-gray-900">Total Paid</h3>
-                <p className="text-3xl font-bold text-green-600">₵400,000</p>
+                <p className="text-3xl font-bold text-green-600">GH₵400,000</p>
               </div>
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function FinancialsPage() {
               <ClockIcon className="h-8 w-8 text-yellow-600" />
               <div className="ml-4">
                 <h3 className="text-lg font-medium text-gray-900">Pending</h3>
-                <p className="text-3xl font-bold text-yellow-600">₵15,000</p>
+                <p className="text-3xl font-bold text-yellow-600">GH₵15,000</p>
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@ export default function FinancialsPage() {
               <DocumentTextIcon className="h-8 w-8 text-red-600" />
               <div className="ml-4">
                 <h3 className="text-lg font-medium text-gray-900">Overdue</h3>
-                <p className="text-3xl font-bold text-red-600">₵10,000</p>
+                <p className="text-3xl font-bold text-red-600">GH₵10,000</p>
               </div>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function FinancialsPage() {
               <CalculatorIcon className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
                 <h3 className="text-lg font-medium text-gray-900">This Year</h3>
-                <p className="text-3xl font-bold text-blue-600">₵425,000</p>
+                <p className="text-3xl font-bold text-blue-600">GH₵425,000</p>
               </div>
             </div>
           </div>
@@ -215,7 +215,7 @@ export default function FinancialsPage() {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
                       <YAxis />
-                      <Tooltip formatter={(value) => [`₵${value.toLocaleString()}`, 'Amount']} />
+                      <Tooltip formatter={(value) => [`GH₵${value.toLocaleString()}`, 'Amount']} />
                       <Legend />
                       <Bar dataKey="amount" fill="#3B82F6" />
                     </BarChart>
@@ -241,7 +241,7 @@ export default function FinancialsPage() {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value, name, props) => [`₵${props.payload.amount.toLocaleString()}`, name]} />
+                      <Tooltip formatter={(value, name, props) => [`GH₵${props.payload.amount.toLocaleString()}`, name]} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -283,7 +283,7 @@ export default function FinancialsPage() {
                           <div className="text-sm font-medium text-gray-900">{payment.description}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₵{payment.amount.toLocaleString()}
+                          GH₵{payment.amount.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(payment.status)}`}>
@@ -335,7 +335,7 @@ export default function FinancialsPage() {
                           {renewal.expiryDate}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₵{renewal.fee.toLocaleString()}
+                          GH₵{renewal.fee.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(renewal.status)}`}>
@@ -390,7 +390,7 @@ export default function FinancialsPage() {
                     <div className="bg-white rounded-lg p-4 border">
                       <div className="flex justify-between items-center">
                         <span className="text-lg font-medium text-gray-900">Estimated Total:</span>
-                        <span className="text-2xl font-bold text-blue-600">₵0</span>
+                        <span className="text-2xl font-bold text-blue-600">GH₵0</span>
                       </div>
                     </div>
                     

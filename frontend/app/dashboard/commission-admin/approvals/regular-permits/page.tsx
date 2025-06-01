@@ -58,7 +58,7 @@ export default function RegularPermitsApproval() {
         applicant: 'John Smith',
         duration: '5 years',
         priority: 'high',
-        estimatedValue: '$2.5M'
+        estimatedValue: 'GH₵2.5M'
       },
       {
         id: '2',
@@ -70,7 +70,7 @@ export default function RegularPermitsApproval() {
         applicant: 'Sarah Johnson',
         duration: '10 years',
         priority: 'medium',
-        estimatedValue: '$15.8M'
+        estimatedValue: 'GH₵15.8M'
       },
       {
         id: '3',
@@ -82,7 +82,7 @@ export default function RegularPermitsApproval() {
         applicant: 'Michael Brown',
         duration: '2 years',
         priority: 'low',
-        estimatedValue: '$800K'
+        estimatedValue: 'GH₵800K'
       },
       {
         id: '4',
@@ -94,7 +94,7 @@ export default function RegularPermitsApproval() {
         applicant: 'Emily Davis',
         duration: '3 years',
         priority: 'medium',
-        estimatedValue: '$5.2M'
+        estimatedValue: 'GH₵5.2M'
       },
       {
         id: '5',
@@ -106,7 +106,7 @@ export default function RegularPermitsApproval() {
         applicant: 'David Wilson',
         duration: '1 year',
         priority: 'high',
-        estimatedValue: '$1.2M'
+        estimatedValue: 'GH₵1.2M'
       }
     ];
 

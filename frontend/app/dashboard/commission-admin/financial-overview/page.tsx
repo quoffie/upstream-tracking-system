@@ -18,10 +18,10 @@ export default function FinancialOverviewPage() {
   const pathname = usePathname();
 
   const [financialData, setFinancialData] = useState({
-    totalRevenue: { amount: '$12.4M', change: '+18%', trend: 'up' },
-    feesCollected: { amount: '$8.7M', change: '+12%', trend: 'up' },
-    pendingPayments: { amount: '$2.1M', transactions: 23 },
-    overduePayments: { amount: '$450K', count: 8 }
+    totalRevenue: { amount: '₵12.4M', change: '+18%', trend: 'up' },
+    feesCollected: { amount: '₵8.7M', change: '+12%', trend: 'up' },
+    pendingPayments: { amount: '₵2.1M', transactions: 23 },
+    overduePayments: { amount: '₵450K', count: 8 }
   });
 
   const [monthlyData, setMonthlyData] = useState([
@@ -66,7 +66,7 @@ export default function FinancialOverviewPage() {
                 <div className="flex items-center">
                   <CurrencyDollarIcon className="h-8 w-8 text-green-600 mr-3" />
                   <div>
-                    <div className="text-3xl font-bold text-green-600">{financialData.totalRevenue.amount}</div>
+                    <div className="text-3xl font-bold text-green-600">GH{financialData.totalRevenue.amount}</div>
                     <div className="text-sm text-gray-600">Total Revenue (Monthly)</div>
                   </div>
                 </div>
@@ -84,7 +84,7 @@ export default function FinancialOverviewPage() {
                 <div className="flex items-center">
                   <BanknotesIcon className="h-8 w-8 text-blue-600 mr-3" />
                   <div>
-                    <div className="text-3xl font-bold text-blue-600">{financialData.feesCollected.amount}</div>
+                    <div className="text-3xl font-bold text-blue-600">GH{financialData.feesCollected.amount}</div>
                     <div className="text-sm text-gray-600">Fees Collected</div>
                   </div>
                 </div>
@@ -102,7 +102,7 @@ export default function FinancialOverviewPage() {
                 <div className="flex items-center">
                   <ClockIcon className="h-8 w-8 text-purple-600 mr-3" />
                   <div>
-                    <div className="text-3xl font-bold text-purple-600">{financialData.pendingPayments.amount}</div>
+                    <div className="text-3xl font-bold text-purple-600">GH{financialData.pendingPayments.amount}</div>
                     <div className="text-sm text-gray-600">Pending Payments</div>
                   </div>
                 </div>
@@ -117,7 +117,7 @@ export default function FinancialOverviewPage() {
                 <div className="flex items-center">
                   <ExclamationTriangleIcon className="h-8 w-8 text-orange-600 mr-3" />
                   <div>
-                    <div className="text-3xl font-bold text-orange-600">{financialData.overduePayments.amount}</div>
+                    <div className="text-3xl font-bold text-orange-600">GH{financialData.overduePayments.amount}</div>
                     <div className="text-sm text-gray-600">Overdue Payments</div>
                   </div>
                 </div>
@@ -138,9 +138,9 @@ export default function FinancialOverviewPage() {
                 <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
                   <div className="text-lg font-semibold text-gray-900">{data.month}</div>
                   <div className="mt-2 space-y-1">
-                    <div className="text-sm text-green-600">Revenue: ${data.revenue}M</div>
-                    <div className="text-sm text-blue-600">Fees: ${data.fees}M</div>
-                    <div className="text-sm text-purple-600">Pending: ${data.pending}M</div>
+                    <div className="text-sm text-green-600">Revenue: ₵{data.revenue}M</div>
+                    <div className="text-sm text-blue-600">Fees: ₵{data.fees}M</div>
+                    <div className="text-sm text-purple-600">Pending: ₵{data.pending}M</div>
                   </div>
                 </div>
               ))}
@@ -159,16 +159,16 @@ export default function FinancialOverviewPage() {
                 <h3 className="text-lg font-semibold text-gray-900">Recent Transactions</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                    <span className="text-sm font-medium">Shell Nigeria - License Fee</span>
-                    <span className="text-sm font-bold text-green-600">$2.1M</span>
+                    <span className="text-sm font-medium">Tullow Ghana - License Fee</span>
+                    <span className="text-sm font-bold text-green-600">₵7.8M</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                    <span className="text-sm font-medium">Chevron - Production Royalty</span>
-                    <span className="text-sm font-bold text-blue-600">$1.8M</span>
+                    <span className="text-sm font-medium">Kosmos Energy - Production Royalty</span>
+                    <span className="text-sm font-bold text-blue-600">₵6.5M</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
-                    <span className="text-sm font-medium">Total E&P - Environmental Fee</span>
-                    <span className="text-sm font-bold text-purple-600">$950K</span>
+                    <span className="text-sm font-medium">Eni Ghana - Environmental Fee</span>
+                    <span className="text-sm font-bold text-purple-600">₵3.2M</span>
                   </div>
                 </div>
               </div>
@@ -177,15 +177,15 @@ export default function FinancialOverviewPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
                     <span className="text-sm font-medium">Mobil - Late Payment</span>
-                    <span className="text-sm font-bold text-red-600">$180K</span>
+                    <span className="text-sm font-bold text-red-600">₵180K</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
                     <span className="text-sm font-medium">Agip - Penalty Fee</span>
-                    <span className="text-sm font-bold text-orange-600">$120K</span>
+                    <span className="text-sm font-bold text-orange-600">₵120K</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
                     <span className="text-sm font-medium">Eni - Processing Fee</span>
-                    <span className="text-sm font-bold text-yellow-600">$150K</span>
+                    <span className="text-sm font-bold text-yellow-600">₵150K</span>
                   </div>
                 </div>
               </div>

@@ -18,49 +18,49 @@ export default function CompaniesPage() {
 
   const [topCompanies, setTopCompanies] = useState([
     {
-      name: 'Shell Nigeria',
+      name: 'Tullow Ghana',
       production: '1.2M bbl/day',
       compliance: 98,
-      revenue: '$2.1M',
+      revenue: 'GH₵7.8M',
       rank: 1,
-      location: 'Lagos, Nigeria',
-      contact: '+234-1-234-5678'
+      location: 'Accra, Ghana',
+      contact: '+233-30-234-5678'
     },
     {
-      name: 'Chevron Nigeria',
+      name: 'Kosmos Energy Ghana',
       production: '980K bbl/day',
       compliance: 96,
-      revenue: '$1.8M',
+      revenue: '₵6.5M',
       rank: 2,
-      location: 'Lagos, Nigeria',
-      contact: '+234-1-234-5679'
+      location: 'Accra, Ghana',
+      contact: '+233-30-234-5679'
     },
     {
-      name: 'Total E&P Nigeria',
+      name: 'Eni Ghana',
       production: '750K bbl/day',
       compliance: 94,
-      revenue: '$1.5M',
+      revenue: '₵5.2M',
       rank: 3,
-      location: 'Port Harcourt, Nigeria',
-      contact: '+234-84-234-567'
+      location: 'Takoradi, Ghana',
+      contact: '+233-31-234-567'
     },
     {
-      name: 'ExxonMobil Nigeria',
+      name: 'Hess Ghana',
       production: '680K bbl/day',
       compliance: 92,
-      revenue: '$1.3M',
+      revenue: '₵4.8M',
       rank: 4,
-      location: 'Lagos, Nigeria',
-      contact: '+234-1-234-5680'
+      location: 'Accra, Ghana',
+      contact: '+233-30-234-5680'
     },
     {
-      name: 'Eni Nigeria',
+      name: 'GNPC Exploration',
       production: '520K bbl/day',
       compliance: 90,
-      revenue: '$1.1M',
+      revenue: '₵4.1M',
       rank: 5,
-      location: 'Lagos, Nigeria',
-      contact: '+234-1-234-5681'
+      location: 'Accra, Ghana',
+      contact: '+233-30-234-5681'
     }
   ]);
 

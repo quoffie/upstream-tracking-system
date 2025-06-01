@@ -266,9 +266,9 @@ export const getCommissionAdminMenuItems = (pathname: string): MenuItem[] => [
       },
       {
         name: 'JV Approvals',
-        href: '/dashboard/commission-admin/approvals/jv',
+        href: '/dashboard/commission-admin/approvals/jv-approvals',
         icon: UserGroupIcon,
-        current: pathname === '/dashboard/commission-admin/approvals/jv'
+        current: pathname === '/dashboard/commission-admin/approvals/jv-approvals'
       },
       {
         name: 'Renewals',

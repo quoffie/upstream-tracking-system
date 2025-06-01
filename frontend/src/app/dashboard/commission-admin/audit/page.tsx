@@ -73,14 +73,14 @@ export default function AuditLogsPage() {
         action: 'Application Approved',
         category: 'Application Processing',
         resource: 'Application APP-2024-001',
-        details: 'Approved company registration application for TechCorp Nigeria Ltd',
+        details: 'Approved company registration application for TechCorp Ghana Ltd',
         ipAddress: '192.168.1.100',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         severity: 'Medium',
         status: 'Success',
         metadata: {
           applicationId: 'APP-2024-001',
-          companyName: 'TechCorp Nigeria Ltd',
+          companyName: 'TechCorp Ghana Ltd',
           approvalAmount: 2500000
         }
       },
@@ -326,7 +326,7 @@ export default function AuditLogsPage() {
   }, [auditLogs, searchTerm, selectedCategory, selectedSeverity, selectedStatus, sortBy, sortOrder]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-NG', {
+    return new Date(dateString).toLocaleDateString('en-GH', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

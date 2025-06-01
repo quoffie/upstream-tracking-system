@@ -35,7 +35,7 @@ export default function ApprovalsQueuePage() {
       {
         id: '1',
         type: 'Company Registration',
-        company: 'Chevron Nigeria Limited',
+        company: 'Kosmos Energy Ghana Limited',
         submittedDate: '2024-01-15',
         priority: 'High',
         daysWaiting: 12,
@@ -55,7 +55,7 @@ export default function ApprovalsQueuePage() {
       {
         id: '3',
         type: 'JV Approval',
-        company: 'Total E&P Nigeria',
+        company: 'Eni Ghana Exploration',
         submittedDate: '2024-01-20',
         priority: 'High',
         daysWaiting: 7,
@@ -64,7 +64,7 @@ export default function ApprovalsQueuePage() {
       {
         id: '4',
         type: 'Rotator Permit',
-        company: 'ExxonMobil Nigeria',
+        company: 'Hess Ghana Limited',
         submittedDate: '2024-01-22',
         priority: 'Low',
         daysWaiting: 5,
@@ -73,7 +73,7 @@ export default function ApprovalsQueuePage() {
       {
         id: '5',
         type: 'Renewal',
-        company: 'Eni Nigeria Limited',
+        company: 'GNPC Exploration Limited',
         submittedDate: '2024-01-25',
         priority: 'Medium',
         daysWaiting: 2,
@@ -303,7 +303,7 @@ export default function ApprovalsQueuePage() {
           <h3 className="text-lg font-semibold mb-2">JV Approvals</h3>
           <p className="text-sm opacity-90 mb-4">Review joint venture applications</p>
           <button 
-            onClick={() => router.push('/dashboard/commission-admin/approvals/jv')}
+            onClick={() => router.push('/dashboard/commission-admin/approvals/jv-approvals')}
             className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors"
           >
             View JV Applications

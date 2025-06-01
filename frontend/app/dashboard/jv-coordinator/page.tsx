@@ -76,11 +76,11 @@ export default function JVCoordinatorDashboard() {
 
   // Mock data for tables
   const activeProjects = [
-    { id: 'JV-2024-001', name: 'Deepwater Exploration Phase 2', partners: 'TotalEnergies, GNPC', status: 'In Progress', startDate: '2024-01-15', budget: '$2.5M', completion: 65 },
-    { id: 'JV-2024-002', name: 'Offshore Development Project', partners: 'Shell Ghana, Tullow Oil', status: 'Planning', startDate: '2024-02-01', budget: '$1.8M', completion: 25 },
-    { id: 'JV-2024-003', name: 'Seismic Survey Initiative', partners: 'Eni Ghana, Kosmos Energy', status: 'Active', startDate: '2024-01-20', budget: '$1.2M', completion: 80 },
-    { id: 'JV-2024-004', name: 'Environmental Impact Study', partners: 'Multiple Partners', status: 'Review', startDate: '2024-01-10', budget: '$950K', completion: 45 },
-    { id: 'JV-2024-005', name: 'Local Content Training Program', partners: 'TotalEnergies, GNPC', status: 'Active', startDate: '2024-01-25', budget: '$800K', completion: 55 }
+    { id: 'JV-2024-001', name: 'Deepwater Exploration Phase 2', partners: 'TotalEnergies, GNPC', status: 'In Progress', startDate: '2024-01-15', budget: 'GH₵2.5M', completion: 65 },
+    { id: 'JV-2024-002', name: 'Offshore Development Project', partners: 'Shell Ghana, Tullow Oil', status: 'Planning', startDate: '2024-02-01', budget: 'GH₵1.8M', completion: 25 },
+    { id: 'JV-2024-003', name: 'Seismic Survey Initiative', partners: 'Eni Ghana, Kosmos Energy', status: 'Active', startDate: '2024-01-20', budget: 'GH₵1.2M', completion: 80 },
+    { id: 'JV-2024-004', name: 'Environmental Impact Study', partners: 'Multiple Partners', status: 'Review', startDate: '2024-01-10', budget: 'GH₵950K', completion: 45 },
+    { id: 'JV-2024-005', name: 'Local Content Training Program', partners: 'TotalEnergies, GNPC', status: 'Active', startDate: '2024-01-25', budget: 'GH₵800K', completion: 55 }
   ];
 
   const pendingAgreements = [
@@ -171,7 +171,7 @@ export default function JVCoordinatorDashboard() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Total Investment</dt>
-                    <dd className="text-lg font-medium text-gray-900">$8.25M</dd>
+                    <dd className="text-lg font-medium text-gray-900">GH₵8.25M</dd>
                   </dl>
                 </div>
               </div>

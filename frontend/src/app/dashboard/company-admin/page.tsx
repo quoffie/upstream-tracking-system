@@ -149,21 +149,21 @@ export default function CompanyAdminDashboard() {
               <li className="py-3">
                 <div className="flex justify-between">
                   <span className="text-sm font-medium">Regular Permit - John Doe</span>
-                  <span className="text-sm font-semibold text-red-600">$1,500</span>
+                  <span className="text-sm font-semibold text-red-600">GH₵1,500</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Due: Dec 15, 2023</p>
               </li>
               <li className="py-3">
                 <div className="flex justify-between">
                   <span className="text-sm font-medium">Rotator Permit - Jane Smith</span>
-                  <span className="text-sm font-semibold text-red-600">$2,200</span>
+                  <span className="text-sm font-semibold text-red-600">GH₵2,200</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Due: Dec 20, 2023</p>
               </li>
               <li className="py-3">
                 <div className="flex justify-between">
                   <span className="text-sm font-medium">Annual Compliance Fee</span>
-                  <span className="text-sm font-semibold text-red-600">$5,000</span>
+                  <span className="text-sm font-semibold text-red-600">GH₵5,000</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Due: Dec 31, 2023</p>
               </li>

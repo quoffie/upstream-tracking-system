@@ -52,7 +52,7 @@ export default function ApplicationsTrackerPage() {
       {
         id: 'APP-2024-001',
         type: 'Company Registration',
-        company: 'Chevron Nigeria Limited',
+        company: 'Kosmos Energy Ghana Limited',
         submittedDate: '2024-01-15',
         status: 'Under Review',
         progress: 65,
@@ -63,7 +63,7 @@ export default function ApplicationsTrackerPage() {
       {
         id: 'APP-2024-002',
         type: 'Regular Permit',
-        company: 'Shell Petroleum Development Company',
+        company: 'Tullow Ghana Limited',
         submittedDate: '2024-01-18',
         status: 'Pending Payment',
         progress: 90,
@@ -74,7 +74,7 @@ export default function ApplicationsTrackerPage() {
       {
         id: 'APP-2024-003',
         type: 'JV Application',
-        company: 'Total E&P Nigeria',
+        company: 'Eni Ghana Exploration',
         submittedDate: '2024-01-20',
         status: 'Submitted',
         progress: 25,
@@ -84,7 +84,7 @@ export default function ApplicationsTrackerPage() {
       {
         id: 'APP-2024-004',
         type: 'Rotator Permit',
-        company: 'ExxonMobil Nigeria',
+        company: 'Hess Ghana Limited',
         submittedDate: '2024-01-22',
         status: 'Approved',
         progress: 100,
@@ -95,7 +95,7 @@ export default function ApplicationsTrackerPage() {
       {
         id: 'APP-2024-005',
         type: 'Renewal Application',
-        company: 'Eni Nigeria Limited',
+        company: 'GNPC Exploration Limited',
         submittedDate: '2024-01-25',
         status: 'Draft',
         progress: 10,

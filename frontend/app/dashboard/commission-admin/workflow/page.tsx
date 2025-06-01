@@ -49,7 +49,7 @@ export default function WorkflowStatusPage() {
       {
         id: 'WF-001',
         applicationId: 'APP-2024-001',
-        company: 'Chevron Nigeria Limited',
+        company: 'Kosmos Energy Ghana Limited',
         type: 'Company Registration',
         currentStage: 'Document Review',
         overallProgress: 65,
@@ -102,7 +102,7 @@ export default function WorkflowStatusPage() {
       {
         id: 'WF-002',
         applicationId: 'APP-2024-002',
-        company: 'Shell Petroleum Development Company',
+        company: 'Tullow Ghana Limited',
         type: 'Regular Permit',
         currentStage: 'Payment Verification',
         overallProgress: 90,
@@ -157,7 +157,7 @@ export default function WorkflowStatusPage() {
       {
         id: 'WF-003',
         applicationId: 'APP-2024-003',
-        company: 'Total E&P Nigeria',
+        company: 'Eni Ghana Exploration',
         type: 'JV Application',
         currentStage: 'Preliminary Review',
         overallProgress: 25,

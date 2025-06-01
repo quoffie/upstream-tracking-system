@@ -209,9 +209,9 @@ export default function AnalyticsPage() {
   }, []);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-NG', {
+    return new Intl.NumberFormat('en-GH', {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'GHS',
       minimumFractionDigits: 0
     }).format(amount);
   };

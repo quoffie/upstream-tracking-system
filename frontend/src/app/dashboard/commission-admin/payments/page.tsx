@@ -56,10 +56,10 @@ export default function PaymentsPage() {
       {
         id: 'TXN-001',
         applicationId: 'APP-2024-001',
-        company: 'Chevron Nigeria Limited',
+        company: 'Kosmos Energy Ghana Limited',
         type: 'Company Registration Fee',
         amount: 2500000,
-        currency: 'NGN',
+        currency: 'GHS',
         status: 'Completed',
         paymentMethod: 'Bank Transfer',
         transactionDate: '2024-01-15T10:30:00Z',
@@ -74,10 +74,10 @@ export default function PaymentsPage() {
       {
         id: 'TXN-002',
         applicationId: 'APP-2024-002',
-        company: 'Shell Petroleum Development Company',
+        company: 'Tullow Ghana Limited',
         type: 'Regular Permit Fee',
         amount: 1800000,
-        currency: 'NGN',
+        currency: 'GHS',
         status: 'Pending',
         paymentMethod: 'Online Payment',
         transactionDate: '2024-01-18T14:20:00Z',
@@ -93,10 +93,10 @@ export default function PaymentsPage() {
       {
         id: 'TXN-003',
         applicationId: 'APP-2024-003',
-        company: 'Total E&P Nigeria',
+        company: 'Eni Ghana Exploration',
         type: 'JV Application Fee',
         amount: 5000000,
-        currency: 'NGN',
+        currency: 'GHS',
         status: 'Processing',
         paymentMethod: 'Wire Transfer',
         transactionDate: '2024-01-20T09:15:00Z',
@@ -111,10 +111,10 @@ export default function PaymentsPage() {
       {
         id: 'TXN-004',
         applicationId: 'APP-2024-004',
-        company: 'ExxonMobil Nigeria',
+        company: 'Hess Ghana Limited',
         type: 'Renewal Fee',
         amount: 3200000,
-        currency: 'NGN',
+        currency: 'GHS',
         status: 'Failed',
         paymentMethod: 'Credit Card',
         transactionDate: '2024-01-22T16:45:00Z',
@@ -124,10 +124,10 @@ export default function PaymentsPage() {
       {
         id: 'TXN-005',
         applicationId: 'APP-2024-005',
-        company: 'Nigerian Agip Oil Company',
+        company: 'GNPC Exploration Limited',
         type: 'Inspection Fee',
         amount: 750000,
-        currency: 'NGN',
+        currency: 'GHS',
         status: 'Refunded',
         paymentMethod: 'Bank Transfer',
         transactionDate: '2024-01-25T11:30:00Z',
@@ -177,8 +177,8 @@ export default function PaymentsPage() {
     }
   };
 
-  const formatCurrency = (amount: number, currency: string = 'NGN') => {
-    return new Intl.NumberFormat('en-NG', {
+  const formatCurrency = (amount: number, currency: string = 'GHS') => {
+    return new Intl.NumberFormat('en-GH', {
       style: 'currency',
       currency: currency,
       minimumFractionDigits: 0

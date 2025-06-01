@@ -65,7 +65,7 @@ export default function ApplicationsSearch() {
         applicant: 'John Smith',
         priority: 'high',
         blocks: ['Block 15A', 'Block 16B', 'Block 17C'],
-        estimatedValue: '$125M',
+        estimatedValue: 'GH₵125M',
         lastUpdated: '2024-01-20',
         assignedOfficer: 'Officer Johnson'
       },
@@ -79,7 +79,7 @@ export default function ApplicationsSearch() {
         applicant: 'Sarah Johnson',
         priority: 'medium',
         blocks: ['Block 8B', 'Block 9C'],
-        estimatedValue: '$89M',
+        estimatedValue: 'GH₵89M',
         lastUpdated: '2024-01-19',
         assignedOfficer: 'Officer Williams'
       },
@@ -93,7 +93,7 @@ export default function ApplicationsSearch() {
         applicant: 'Michael Brown',
         priority: 'high',
         blocks: ['Block 22C', 'Block 23D', 'Block 24E', 'Block 25F'],
-        estimatedValue: '$200M',
+        estimatedValue: 'GH₵200M',
         lastUpdated: '2024-01-18',
         assignedOfficer: 'Officer Davis'
       },
@@ -107,7 +107,7 @@ export default function ApplicationsSearch() {
         applicant: 'Emily Davis',
         priority: 'low',
         blocks: ['Block 5D', 'Block 6E'],
-        estimatedValue: '$45M',
+        estimatedValue: 'GH₵45M',
         lastUpdated: '2024-01-17',
         assignedOfficer: 'Officer Brown'
       },
@@ -121,7 +121,7 @@ export default function ApplicationsSearch() {
         applicant: 'David Wilson',
         priority: 'medium',
         blocks: ['Block 11F', 'Block 12G'],
-        estimatedValue: '$75M',
+        estimatedValue: 'GH₵75M',
         lastUpdated: '2024-01-16',
         assignedOfficer: 'Officer Miller'
       },
@@ -135,7 +135,7 @@ export default function ApplicationsSearch() {
         applicant: 'Lisa Anderson',
         priority: 'high',
         blocks: ['Block 18H', 'Block 19I'],
-        estimatedValue: '$95M',
+        estimatedValue: 'GH₵95M',
         lastUpdated: '2024-01-15',
         assignedOfficer: 'Officer Taylor'
       },
@@ -149,7 +149,7 @@ export default function ApplicationsSearch() {
         applicant: 'Robert Chen',
         priority: 'high',
         blocks: ['Block 30J', 'Block 31K'],
-        estimatedValue: '$180M',
+        estimatedValue: 'GH₵180M',
         lastUpdated: '2024-01-14',
         assignedOfficer: 'Officer Anderson'
       },
@@ -163,7 +163,7 @@ export default function ApplicationsSearch() {
         applicant: 'Jennifer White',
         priority: 'medium',
         blocks: ['Block 7L'],
-        estimatedValue: '$60M',
+        estimatedValue: 'GH₵60M',
         lastUpdated: '2024-01-13',
         assignedOfficer: 'Officer Wilson'
       }

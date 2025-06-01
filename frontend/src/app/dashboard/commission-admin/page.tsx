@@ -114,7 +114,7 @@ export default function CommissionAdminDashboard() {
     },
     {
       title: 'Financial Summary',
-      value: '$12.4M',
+      value: 'GH₵12.4M',
       change: '+18%',
       changeType: 'positive' as const,
       icon: '💰',
@@ -148,11 +148,11 @@ export default function CommissionAdminDashboard() {
   ];
 
   const topCompanies = [
-    { name: 'Tullow Oil', production: '1.2M bbl/day', compliance: 96, revenue: '$245M' },
-    { name: 'Kosmos Energy', production: '0.8M bbl/day', compliance: 94, revenue: '$189M' },
-    { name: 'Eni Ghana', production: '0.6M bbl/day', compliance: 92, revenue: '$156M' },
-    { name: 'Hess Corporation', production: '0.4M bbl/day', compliance: 98, revenue: '$134M' },
-    { name: 'Anadarko', production: '0.3M bbl/day', compliance: 91, revenue: '$98M' }
+    { name: 'Tullow Oil', production: '1.2M bbl/day', compliance: 96, revenue: 'GH₵245M' },
+    { name: 'Kosmos Energy', production: '0.8M bbl/day', compliance: 94, revenue: 'GH₵189M' },
+    { name: 'Eni Ghana', production: '0.6M bbl/day', compliance: 92, revenue: 'GH₵156M' },
+    { name: 'Hess Corporation', production: '0.4M bbl/day', compliance: 98, revenue: 'GH₵134M' },
+    { name: 'Anadarko', production: '0.3M bbl/day', compliance: 91, revenue: 'GH₵98M' }
   ];
 
   const criticalIssues = [
@@ -163,7 +163,7 @@ export default function CommissionAdminDashboard() {
       severity: "Critical",
       status: "Under Investigation",
       daysOpen: 12,
-      impact: "$2.5M potential fine"
+      impact: "GH₵2.5M potential fine"
     },
     {
       id: 2,
@@ -181,7 +181,7 @@ export default function CommissionAdminDashboard() {
       severity: "High",
       status: "Audit Required",
       daysOpen: 5,
-      impact: "$1.2M revenue gap"
+      impact: "GH₵1.2M revenue gap"
     },
     {
       id: 4,
@@ -451,22 +451,22 @@ export default function CommissionAdminDashboard() {
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">$12.4M</div>
+                <div className="text-3xl font-bold text-green-600">GH₵12.4M</div>
                 <div className="text-sm text-gray-600">Total Revenue (Monthly)</div>
                 <div className="text-xs text-green-600 mt-1">+18% from last month</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">$8.7M</div>
+                <div className="text-3xl font-bold text-blue-600">GH₵8.7M</div>
                 <div className="text-sm text-gray-600">Fees Collected</div>
                 <div className="text-xs text-blue-600 mt-1">+12% from last month</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">$2.1M</div>
+                <div className="text-3xl font-bold text-purple-600">GH₵2.1M</div>
                 <div className="text-sm text-gray-600">Pending Payments</div>
                 <div className="text-xs text-gray-500 mt-1">23 transactions</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600">$450K</div>
+                <div className="text-3xl font-bold text-orange-600">GH₵450K</div>
                 <div className="text-sm text-gray-600">Overdue Payments</div>
                 <div className="text-xs text-red-600 mt-1">8 overdue</div>
               </div>

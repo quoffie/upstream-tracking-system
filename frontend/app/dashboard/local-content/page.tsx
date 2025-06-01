@@ -85,10 +85,10 @@ export default function LocalContentDashboard() {
   ];
 
   const complianceViolations = [
-    { id: 'VIO-2024-001', company: 'Shell Ghana Upstream', violation: 'Local Employment Target', severity: 'High', reportedDate: '2024-01-15', status: 'Open', fine: '$50,000' },
-    { id: 'VIO-2024-002', company: 'Eni Ghana Exploration', violation: 'Training Requirements', severity: 'Medium', reportedDate: '2024-01-12', status: 'Under Investigation', fine: '$25,000' },
-    { id: 'VIO-2024-003', company: 'Kosmos Energy Ghana', violation: 'Procurement Compliance', severity: 'Low', reportedDate: '2024-01-18', status: 'Resolved', fine: '$10,000' },
-    { id: 'VIO-2024-004', company: 'Tullow Ghana Limited', violation: 'Reporting Delay', severity: 'Medium', reportedDate: '2024-01-20', status: 'Open', fine: '$15,000' }
+    { id: 'VIO-2024-001', company: 'Shell Ghana Upstream', violation: 'Local Employment Target', severity: 'High', reportedDate: '2024-01-15', status: 'Open', fine: 'GH₵50,000' },
+    { id: 'VIO-2024-002', company: 'Eni Ghana Exploration', violation: 'Training Requirements', severity: 'Medium', reportedDate: '2024-01-12', status: 'Under Investigation', fine: 'GH₵25,000' },
+    { id: 'VIO-2024-003', company: 'Kosmos Energy Ghana', violation: 'Procurement Compliance', severity: 'Low', reportedDate: '2024-01-18', status: 'Resolved', fine: 'GH₵10,000' },
+    { id: 'VIO-2024-004', company: 'Tullow Ghana Limited', violation: 'Reporting Delay', severity: 'Medium', reportedDate: '2024-01-20', status: 'Open', fine: 'GH₵15,000' }
   ];
 
   const breadcrumbItems = [
