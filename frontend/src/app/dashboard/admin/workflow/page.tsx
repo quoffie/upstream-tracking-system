@@ -245,7 +245,7 @@ export default function WorkflowStatusPage() {
             <div className="bg-red-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-red-900">Bottlenecks</h3>
               <p className="text-2xl font-bold text-red-600">
-                {filteredApplications.filter(a => a.bottleneck).length}
+                {filteredApplications.filter((a: any) => a.bottleneck).length}
               </p>
             </div>
             <div className="bg-yellow-50 rounded-lg p-4">
@@ -255,7 +255,7 @@ export default function WorkflowStatusPage() {
             <div className="bg-green-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-green-900">On Track</h3>
               <p className="text-2xl font-bold text-green-600">
-                {filteredApplications.filter(a => !a.bottleneck).length}
+                {filteredApplications.filter((a: any) => !a.bottleneck).length}
               </p>
             </div>
           </div>

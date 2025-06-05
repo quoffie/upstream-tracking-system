@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import DashboardLayout from '../../../components/layouts/DashboardLayout';
 import { getCompanyAdminMenuItems } from '../../../components/layouts/DashboardMenus';
+import { usePermits } from '../../../hooks/useApi';
+import { apiService } from '../../../services/api.service';
 import { 
   DocumentPlusIcon, 
   EyeIcon, 
@@ -25,8 +27,10 @@ export default function ApplicationsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTimeframe, setSelectedTimeframe] = useState('all');
 
-  // Mock data for applications
-  const applications = [
+  // Use API hook to fetch permits
+  const { data: permitsData, loading, error, execute: refetchPermits } = usePermits();
+  const applications = permitsData?.data || [
+    // Fallback mock data for applications
     {
       id: 'APP-2023-0142',
       type: 'Regular Permit',
@@ -157,14 +161,14 @@ export default function ApplicationsPage() {
     }
   ];
 
-  const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.applicant.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.type.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredApplications = applications.filter((app: any) => {
+    const matchesSearch = (app.applicant || app.applicantName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.id || app.referenceNumber || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.type || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || app.status === filterStatus;
     const matchesType = filterType === 'all' || app.type === filterType;
     const daysCutoff = selectedTimeframe === 'all' ? Infinity : parseInt(selectedTimeframe);
-    const matchesTimeframe = selectedTimeframe === 'all' || app.daysInSystem <= daysCutoff;
+    const matchesTimeframe = selectedTimeframe === 'all' || (app.daysInSystem || 0) <= daysCutoff;
     return matchesSearch && matchesStatus && matchesType && matchesTimeframe;
   });
 
@@ -195,19 +199,32 @@ const applicationTypes = [
 
 
   const handleViewApplication = (id: string) => {
-    alert(`Viewing application details for ${id}`);
+    window.open(`/dashboard/company-admin/applications/${id}`, '_blank');
   };
 
   const handleEditApplication = (id: string) => {
-    alert(`Editing application ${id}`);
+    window.location.href = `/dashboard/company-admin/applications/${id}/edit`;
   };
 
   const handleTrackApplication = (id: string) => {
-    alert(`Tracking application ${id}`);
+    window.open(`/dashboard/company-admin/applications/${id}/track`, '_blank');
   };
 
-  const handleDownloadApplication = (id: string) => {
-    alert(`Downloading application ${id}`);
+  const handleDownloadApplication = async (id: string) => {
+    try {
+      const response = await apiService.downloadDocument(id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `application-${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      alert('Failed to download document. Please try again.');
+    }
   };
 
   const handleWithdrawApplication = (id: string) => {
@@ -338,39 +355,43 @@ const applicationTypes = [
             </div>
           </div>
 
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-blue-900">Total Applications</h3>
-              <p className="text-2xl font-bold text-blue-600">{filteredApplications.length}</p>
-            </div>
-            <div className="bg-yellow-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-yellow-900">Under Review</h3>
-              <p className="text-2xl font-bold text-yellow-600">
-                {filteredApplications.filter(app => app.status === 'Under Review').length}
-              </p>
-            </div>
-            <div className="bg-green-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-green-900">Approved</h3>
-              <p className="text-2xl font-bold text-green-600">
-                {filteredApplications.filter(app => app.status === 'Approved').length}
-              </p>
-            </div>
-            <div className="bg-orange-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-orange-900">Returned</h3>
-              <p className="text-2xl font-bold text-orange-600">
-                {filteredApplications.filter(app => app.status === 'Returned').length}
-              </p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-900">Draft</h3>
-              <p className="text-2xl font-bold text-gray-600">
-                {filteredApplications.filter(app => app.status === 'Draft').length}
-              </p>
-            </div>
-          </div>
+        </div>
 
-          {/* Applications Table */}
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <div className="bg-blue-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-blue-900">Total Applications</h3>
+            <p className="text-2xl font-bold text-blue-600">{filteredApplications.length}</p>
+          </div>
+          <div className="bg-yellow-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-yellow-900">Under Review</h3>
+            <p className="text-2xl font-bold text-yellow-600">
+              {filteredApplications.filter((app: any) => app.status === 'Under Review').length}
+            </p>
+          </div>
+          <div className="bg-green-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-green-900">Approved</h3>
+            <p className="text-2xl font-bold text-green-600">
+              {filteredApplications.filter((app: any) => app.status === 'Approved').length}
+            </p>
+          </div>
+          <div className="bg-orange-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-orange-900">Returned</h3>
+            <p className="text-2xl font-bold text-orange-600">
+              {filteredApplications.filter((app: any) => app.status === 'Returned').length}
+            </p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h3 className="text-sm font-medium text-gray-900">Draft</h3>
+            <p className="text-2xl font-bold text-gray-600">
+              {filteredApplications.filter((app: any) => app.status === 'Draft').length}
+            </p>
+          </div>
+        </div>
+
+        {/* Applications Table */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -405,88 +426,108 @@ const applicationTypes = [
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredApplications.map((application) => (
-                  <tr key={application.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {application.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.type}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{application.applicant}</div>
-                        {application.position !== 'N/A' && (
-                          <div className="text-sm text-gray-500">{application.position}</div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.submissionDate}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(application.status)}`}>
-                        {application.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.currentStage}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(application.paymentStatus)}`}>
-                          {application.paymentStatus}
-                        </span>
-                        {application.amount > 0 && (
-                          <div className="text-sm text-gray-500">GHS {application.amount.toLocaleString()}</div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <span className={getPriorityColor(application.priority)}>
-                        {application.daysInSystem} days
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <button
-                        onClick={() => handleViewApplication(application.id)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        View
-                      </button>
-                      {application.status === 'Draft' && (
-                        <button
-                          onClick={() => handleEditApplication(application.id)}
-                          className="text-green-600 hover:text-green-900"
-                        >
-                          Edit
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleTrackApplication(application.id)}
-                        className="text-purple-600 hover:text-purple-900"
-                      >
-                        Track
-                      </button>
-                      {application.status === 'Approved' && (
-                        <button
-                          onClick={() => handleDownloadApplication(application.id)}
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Download
-                        </button>
-                      )}
-                      {(application.status === 'Draft' || application.status === 'Under Review') && (
-                        <button
-                          onClick={() => handleWithdrawApplication(application.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Withdraw
-                        </button>
-                      )}
+                {loading ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-4 text-center text-sm text-gray-500">
+                      Loading applications...
                     </td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-4 text-center text-sm text-red-500">
+                      Error loading applications: {error}
+                    </td>
+                  </tr>
+                ) : filteredApplications.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-4 text-center text-sm text-gray-500">
+                      No applications found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredApplications.map((application: any) => (
+                    <tr key={application.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {application.referenceNumber || application.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{application.applicant || application.applicantName || 'N/A'}</div>
+                          {application.position !== 'N/A' && application.position && (
+                            <div className="text-sm text-gray-500">{application.position}</div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(application.submissionDate || application.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(application.status)}`}>
+                          {application.status?.replace('_', ' ') || 'Unknown'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.currentStage || 'Initial Review'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(application.paymentStatus)}`}>
+                            {application.paymentStatus?.replace('_', ' ') || 'Pending'}
+                          </span>
+                          {(application.amount || 0) > 0 && (
+                            <div className="text-sm text-gray-500">GHS {(application.amount || 0).toLocaleString()}</div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span className={getPriorityColor(application.priority)}>
+                          {application.daysInSystem || 0} days
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button
+                          onClick={() => handleViewApplication(application.id)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          View
+                        </button>
+                        {application.status === 'Draft' && (
+                          <button
+                            onClick={() => handleEditApplication(application.id)}
+                            className="text-green-600 hover:text-green-900"
+                          >
+                            Edit
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleTrackApplication(application.id)}
+                          className="text-purple-600 hover:text-purple-900"
+                        >
+                          Track
+                        </button>
+                        {application.status === 'Approved' && (
+                          <button
+                            onClick={() => handleDownloadApplication(application.id)}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            Download
+                          </button>
+                        )}
+                        {(application.status === 'Draft' || application.status === 'Under Review') && (
+                          <button
+                            onClick={() => handleWithdrawApplication(application.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Withdraw
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

@@ -14,6 +14,8 @@ import {
   HistoryIcon,
   ReportIcon
 } from '../../../components/icons/DashboardIcons';
+import { usePermits, useSubmit } from '../../../hooks/useApi';
+import { apiService } from '../../../services/api.service';
 
 export default function ApplicationReviewPage() {
   const [activeTab, setActiveTab] = useState('applications');
@@ -21,6 +23,10 @@ export default function ApplicationReviewPage() {
   const [filterType, setFilterType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTimeframe, setSelectedTimeframe] = useState('all');
+
+  // Use API hook to fetch permits
+  const { data: permitsData, loading, error, execute: refetchPermits } = usePermits();
+  const { submit: submitAction } = useSubmit();
 
   const sidebarItems = [
     { name: 'Dashboard', href: '/dashboard/immigration', icon: HomeIcon, current: activeTab === 'overview' },
@@ -36,7 +42,7 @@ export default function ApplicationReviewPage() {
   ];
 
   // Mock data for applications pending immigration review
-  const applications = [
+  const applications = permitsData?.data || [
     {
       id: 'APP-2023-0142',
       type: 'Regular Permit',
@@ -159,33 +165,91 @@ export default function ApplicationReviewPage() {
     }
   ];
 
-  const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.applicant.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.nationality.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.company.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredApplications = applications.filter((app: any) => {
+    const matchesSearch = (app.applicant || app.applicantName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.id || app.referenceNumber || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.type || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.nationality || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.company?.name || app.companyName || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || app.status === filterStatus;
     const matchesType = filterType === 'all' || app.type === filterType;
     const daysCutoff = selectedTimeframe === 'all' ? Infinity : parseInt(selectedTimeframe);
-    const matchesTimeframe = selectedTimeframe === 'all' || app.daysInSystem <= daysCutoff;
+    const matchesTimeframe = selectedTimeframe === 'all' || (app.daysInSystem || 0) <= daysCutoff;
     return matchesSearch && matchesStatus && matchesType && matchesTimeframe;
   });
 
   const handleViewApplication = (id: string) => {
-    alert(`Viewing application details for ${id}`);
+    window.open(`/dashboard/immigration/applications/${id}`, '_blank');
   };
 
-  const handleApproveApplication = (id: string) => {
-    alert(`Approving application ${id}`);
+  const handleApproveApplication = async (id: string) => {
+    const comments = prompt('Enter approval comments (optional):');
+    try {
+      await submitAction(
+        () => apiService.approvePermit(id, comments || undefined),
+        {
+          onSuccess: () => {
+            alert('Application approved successfully!');
+            refetchPermits();
+          },
+          onError: (error) => {
+            alert(`Failed to approve application: ${error}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error approving application:', error);
+    }
   };
 
-  const handleRejectApplication = (id: string) => {
-    alert(`Rejecting application ${id}`);
+  const handleRejectApplication = async (id: string) => {
+    const comments = prompt('Enter rejection reason:');
+    if (!comments) {
+      alert('Rejection reason is required');
+      return;
+    }
+    
+    try {
+      await submitAction(
+        () => apiService.rejectPermit(id, comments),
+        {
+          onSuccess: () => {
+            alert('Application rejected successfully!');
+            refetchPermits();
+          },
+          onError: (error) => {
+            alert(`Failed to reject application: ${error}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error rejecting application:', error);
+    }
   };
 
-  const handleRequestInfo = (id: string) => {
-    alert(`Requesting additional information for application ${id}`);
+  const handleRequestInfo = async (id: string) => {
+    const message = prompt('Enter information request message:');
+    if (!message) {
+      alert('Information request message is required');
+      return;
+    }
+    
+    try {
+      await submitAction(
+        () => apiService.updatePermitStatus(id, 'DOCUMENT_REQUIRED', message),
+        {
+          onSuccess: () => {
+            alert('Information request sent successfully!');
+            refetchPermits();
+          },
+          onError: (error) => {
+            alert(`Failed to send information request: ${error}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error requesting information:', error);
+    }
   };
 
   const handlePrintApplication = (id: string) => {
@@ -313,77 +377,97 @@ export default function ApplicationReviewPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredApplications.map((application) => (
-                  <tr key={application.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
-                      {application.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.type}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {application.applicant}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.nationality}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.company}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.pcApprovalDate}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={
-                        `px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${application.status === 'Approved' ? 'bg-green-100 text-green-800' : ''}
-                        ${application.status === 'Pending Immigration Review' ? 'bg-yellow-100 text-yellow-800' : ''}
-                        ${application.status === 'Additional Info Requested' ? 'bg-blue-100 text-blue-800' : ''}
-                        ${application.status === 'Rejected' ? 'bg-red-100 text-red-800' : ''}`
-                      }>
-                        {application.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleViewApplication(application.id)}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          View
-                        </button>
-                        {application.status === 'Pending Immigration Review' && (
-                          <>
-                            <button
-                              onClick={() => handleApproveApplication(application.id)}
-                              className="text-green-600 hover:text-green-900"
-                            >
-                              Approve
-                            </button>
-                            <button
-                              onClick={() => handleRejectApplication(application.id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              Reject
-                            </button>
-                            <button
-                              onClick={() => handleRequestInfo(application.id)}
-                              className="text-amber-600 hover:text-amber-900"
-                            >
-                              Request Info
-                            </button>
-                          </>
-                        )}
-                        <button
-                          onClick={() => handlePrintApplication(application.id)}
-                          className="text-gray-600 hover:text-gray-900"
-                        >
-                          Print
-                        </button>
-                      </div>
+                {loading ? (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500">
+                      Loading applications...
                     </td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-4 text-center text-sm text-red-500">
+                      Error loading applications: {error}
+                    </td>
+                  </tr>
+                ) : filteredApplications.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500">
+                      No applications found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredApplications.map((application: any) => (
+                    <tr key={application.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+                        {application.referenceNumber || application.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {application.applicant || application.applicantName || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.nationality}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.company?.name || application.companyName || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.pcApprovalDate ? new Date(application.pcApprovalDate).toLocaleDateString() : 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={
+                          `px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                          ${application.status === 'APPROVED' ? 'bg-green-100 text-green-800' : ''}
+                          ${application.status === 'PENDING' || application.status === 'Pending Immigration Review' ? 'bg-yellow-100 text-yellow-800' : ''}
+                          ${application.status === 'DOCUMENT_REQUIRED' || application.status === 'Additional Info Requested' ? 'bg-blue-100 text-blue-800' : ''}
+                          ${application.status === 'REJECTED' ? 'bg-red-100 text-red-800' : ''}`
+                        }>
+                          {application.status?.replace('_', ' ') || 'Unknown'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleViewApplication(application.id)}
+                            className="text-blue-600 hover:text-blue-900"
+                          >
+                            View
+                          </button>
+                          {(application.status === 'PENDING' || application.status === 'Pending Immigration Review') && (
+                            <>
+                              <button
+                                onClick={() => handleApproveApplication(application.id)}
+                                className="text-green-600 hover:text-green-900"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleRejectApplication(application.id)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                Reject
+                              </button>
+                              <button
+                                onClick={() => handleRequestInfo(application.id)}
+                                className="text-amber-600 hover:text-amber-900"
+                              >
+                                Request Info
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => handlePrintApplication(application.id)}
+                            className="text-gray-600 hover:text-gray-900"
+                          >
+                            Print
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

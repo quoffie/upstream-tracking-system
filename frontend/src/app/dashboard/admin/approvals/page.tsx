@@ -12,11 +12,17 @@ import {
   AuditIcon,
   ProfileIcon
 } from '../../../components/icons/DashboardIcons';
+import { usePermits, useSubmit } from '../../../hooks/useApi';
+import { apiService } from '../../../services/api.service';
 
 export default function ApprovalsQueuePage() {
   const [activeTab, setActiveTab] = useState('approvals');
   const [filterType, setFilterType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Use API hook to fetch permits
+  const { data: permitsData, loading, error, execute: refetchPermits } = usePermits();
+  const { submit: submitAction } = useSubmit();
 
   const sidebarItems = [
     { name: 'Dashboard', href: '/dashboard/admin', icon: HomeIcon, current: activeTab === 'overview' },
@@ -30,7 +36,7 @@ export default function ApprovalsQueuePage() {
   ];
 
   // Mock data for pending approvals
-  const pendingApprovals = [
+  const pendingApprovals = permitsData?.data || [
     {
       id: 'APP-2023-0045',
       type: 'Regular Permit',
@@ -83,30 +89,80 @@ export default function ApprovalsQueuePage() {
     },
   ];
 
-  const filteredApprovals = pendingApprovals.filter(approval => {
-    const matchesSearch = approval.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         approval.id.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredApprovals = pendingApprovals.filter((approval: any) => {
+    const matchesSearch = (approval.company || approval.companyName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (approval.id || approval.referenceNumber || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterType === 'all' || approval.type === filterType;
     return matchesSearch && matchesFilter;
   });
 
-  const handleApprove = (id: string) => {
-    alert(`Approving application ${id}`);
-  };
-
-  const handleReject = (id: string) => {
-    const reason = prompt('Please provide a reason for rejection:');
-    if (reason) {
-      alert(`Rejecting application ${id} with reason: ${reason}`);
+  const handleApprove = async (id: string) => {
+    const comments = prompt('Enter approval comments (optional):');
+    try {
+      await submitAction(
+        () => apiService.approvePermit(id, comments || undefined),
+        {
+          onSuccess: () => {
+            alert('Application approved successfully!');
+            refetchPermits();
+          },
+          onError: (error) => {
+            alert(`Failed to approve application: ${error}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error approving application:', error);
     }
   };
 
-  const handleForwardToGIS = (id: string) => {
-    alert(`Forwarding application ${id} to Ghana Immigration Service`);
+  const handleReject = async (id: string) => {
+    const comments = prompt('Enter rejection reason:');
+    if (!comments) {
+      alert('Rejection reason is required');
+      return;
+    }
+    
+    try {
+      await submitAction(
+        () => apiService.rejectPermit(id, comments),
+        {
+          onSuccess: () => {
+            alert('Application rejected successfully!');
+            refetchPermits();
+          },
+          onError: (error) => {
+            alert(`Failed to reject application: ${error}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error rejecting application:', error);
+    }
+  };
+
+  const handleForwardToGIS = async (id: string) => {
+    const comments = prompt('Enter forwarding comments (optional):');
+    try {
+      await submitAction(
+        () => apiService.updatePermitStatus(id, 'GIS_REVIEW', comments || undefined),
+        {
+          onSuccess: () => {
+            alert('Application forwarded to GIS successfully!');
+            refetchPermits();
+          },
+          onError: (error) => {
+            alert(`Failed to forward application: ${error}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error forwarding application:', error);
+    }
   };
 
   const handleViewDetails = (id: string) => {
-    alert(`Viewing details for application ${id}`);
+    window.open(`/dashboard/admin/approvals/${id}`, '_blank');
   };
 
   const getPriorityColor = (priority: string) => {
@@ -188,19 +244,19 @@ export default function ApprovalsQueuePage() {
             <div className="bg-red-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-red-900">High Priority</h3>
               <p className="text-2xl font-bold text-red-600">
-                {filteredApprovals.filter(a => a.priority === 'High').length}
+                {filteredApprovals.filter((a: any) => a.priority === 'High').length}
               </p>
             </div>
             <div className="bg-yellow-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-yellow-900">Payment Pending</h3>
               <p className="text-2xl font-bold text-yellow-600">
-                {filteredApprovals.filter(a => a.paymentStatus === 'Pending Verification').length}
+                {filteredApprovals.filter((a: any) => a.paymentStatus === 'Pending Verification').length}
               </p>
             </div>
             <div className="bg-green-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-green-900">Ready to Approve</h3>
               <p className="text-2xl font-bold text-green-600">
-                {filteredApprovals.filter(a => a.paymentStatus === 'Verified').length}
+                {filteredApprovals.filter((a: any) => a.paymentStatus === 'Verified').length}
               </p>
             </div>
           </div>
@@ -240,68 +296,92 @@ export default function ApprovalsQueuePage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredApprovals.map((approval) => (
-                  <tr key={approval.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {approval.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {approval.type}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {approval.company}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {approval.forwardedBy}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {approval.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(approval.paymentStatus)}`}>
-                        {approval.paymentStatus}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(approval.priority)}`}>
-                        {approval.priority}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {approval.daysWaiting} days
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <button
-                        onClick={() => handleViewDetails(approval.id)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleApprove(approval.id)}
-                        className="text-green-600 hover:text-green-900"
-                        disabled={approval.paymentStatus !== 'Verified'}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleReject(approval.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Reject
-                      </button>
-                      {(approval.type === 'Regular Permit' || approval.type === 'Rotator Permit') && (
-                        <button
-                          onClick={() => handleForwardToGIS(approval.id)}
-                          className="text-purple-600 hover:text-purple-900"
-                          disabled={approval.paymentStatus !== 'Verified'}
-                        >
-                          To GIS
-                        </button>
-                      )}
+                {loading ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-4 text-center text-sm text-gray-500">
+                      Loading approvals...
                     </td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-4 text-center text-sm text-red-500">
+                      Error loading approvals: {error}
+                    </td>
+                  </tr>
+                ) : filteredApprovals.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="px-6 py-4 text-center text-sm text-gray-500">
+                      No approvals found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredApprovals.map((approval: any) => (
+                    <tr key={approval.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {approval.referenceNumber || approval.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {approval.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {approval.company?.name || approval.companyName || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {approval.forwardedBy || 'System'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(approval.date || approval.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(approval.paymentStatus || 'Verified')}`}>
+                          {approval.paymentStatus || 'Verified'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(approval.priority || 'Medium')}`}>
+                          {approval.priority || 'Medium'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {approval.daysWaiting || Math.floor((new Date().getTime() - new Date(approval.date || approval.createdAt).getTime()) / (1000 * 60 * 60 * 24))} days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button
+                          onClick={() => handleViewDetails(approval.id)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          View
+                        </button>
+                        {(approval.status === 'PENDING' || !approval.status) && (
+                          <>
+                            <button
+                              onClick={() => handleApprove(approval.id)}
+                              className="text-green-600 hover:text-green-900"
+                              disabled={approval.paymentStatus === 'Pending Verification'}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleReject(approval.id)}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Reject
+                            </button>
+                            {(approval.type === 'Regular Permit' || approval.type === 'Rotator Permit') && (
+                              <button
+                                onClick={() => handleForwardToGIS(approval.id)}
+                                className="text-purple-600 hover:text-purple-900"
+                                disabled={approval.paymentStatus === 'Pending Verification'}
+                              >
+                                To GIS
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

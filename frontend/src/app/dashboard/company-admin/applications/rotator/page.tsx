@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import DashboardLayout from '../../../../components/layouts/DashboardLayout';
 import { FileTextIcon, DocumentIcon, ProfileIcon, PaymentIcon, ApplicationIcon, HomeIcon, RefreshCwIcon, PermitIcon, PersonnelIcon, ChevronLeftIcon, ChevronRightIcon, CheckCircleIcon } from '../../../../components/icons/DashboardIcons';
+import { useSubmit } from '../../../../hooks/useApi';
+import { apiService } from '../../../../services/api.service';
 
 // Define the SidebarNavItem interface
 interface SidebarNavItem {
@@ -118,6 +120,8 @@ const steps = [
 ];
 
 const RotatorPermitApplicationPage: React.FC = () => {
+  const { loading: submitting, error: submitError, success, submit, reset } = useSubmit();
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<RotatorPermitFormData>(initialFormData);
   const [errors, setErrors] = useState<Partial<Record<keyof RotatorPermitFormData, string>>>({});
@@ -182,13 +186,77 @@ const RotatorPermitApplicationPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateStep()) {
-      // Final validation for all fields if needed
-      console.log('Rotator Form submitted:', formData);
-      // TODO: API call to submit form data
-      alert('Rotator Application submitted successfully!'); // Placeholder
+      try {
+        // Create FormData for file uploads
+        const submitData = new FormData();
+        
+        // Add text fields
+        Object.entries(formData).forEach(([key, value]) => {
+          if (value !== null && typeof value !== 'object') {
+            submitData.append(key, value as string);
+          }
+        });
+        
+        // Add file fields
+        if (formData.photo) {
+          submitData.append('photo', formData.photo);
+        }
+        if (formData.passportCopy) {
+          submitData.append('passportCopy', formData.passportCopy);
+        }
+        if (formData.employmentContractCopy) {
+          submitData.append('employmentContractCopy', formData.employmentContractCopy);
+        }
+        if (formData.workPermitCopyPrevious) {
+          submitData.append('workPermitCopyPrevious', formData.workPermitCopyPrevious);
+        }
+        if (formData.relevantCertificates) {
+          submitData.append('relevantCertificates', formData.relevantCertificates);
+        }
+        if (formData.companyRegistrationCertCopy) {
+          submitData.append('companyRegistrationCertCopy', formData.companyRegistrationCertCopy);
+        }
+        if (formData.taxClearanceCertCopy) {
+          submitData.append('taxClearanceCertCopy', formData.taxClearanceCertCopy);
+        }
+        if (formData.letterOfIntentCopy) {
+          submitData.append('letterOfIntentCopy', formData.letterOfIntentCopy);
+        }
+        if (formData.cvCopy) {
+          submitData.append('cvCopy', formData.cvCopy);
+        }
+        if (formData.paymentReceipt) {
+          submitData.append('paymentReceipt', formData.paymentReceipt);
+        }
+        if (formData.otherSupportingDocs) {
+          formData.otherSupportingDocs.forEach((file, index) => {
+            submitData.append(`otherSupportingDocs[${index}]`, file);
+          });
+        }
+        
+        // Add permit type
+        submitData.append('type', 'ROTATOR');
+        
+        await submit(
+          () => apiService.createPermit(submitData),
+          {
+            onSuccess: (data) => {
+              alert(`Rotator permit application submitted successfully! Reference: ${data.referenceNumber || data.id}`);
+              // Reset form
+              setFormData(initialFormData);
+              setCurrentStep(1);
+            },
+            onError: (error) => {
+              console.error('Error submitting rotator application:', error);
+            }
+          }
+        );
+      } catch (error) {
+        console.error('Error submitting rotator application:', error);
+      }
     }
   };
 
@@ -280,12 +348,32 @@ const RotatorPermitApplicationPage: React.FC = () => {
                   Next <ChevronRightIcon className="inline h-5 w-5 ml-2" />
                 </button>
               ) : (
-                <button
-                  type="submit"
-                  className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                >
-                  <CheckCircleIcon className="inline h-5 w-5 mr-2" /> Submit Application
-                </button>
+                <div className="ml-3">
+                  {submitError && (
+                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+                      <p className="text-red-600 text-sm">{submitError}</p>
+                    </div>
+                  )}
+                  
+                  {success && (
+                    <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                      <p className="text-green-600 text-sm">Rotator application submitted successfully!</p>
+                    </div>
+                  )}
+                  
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className={`inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                      submitting 
+                        ? 'bg-gray-400 text-gray-700 cursor-not-allowed focus:ring-gray-500' 
+                        : 'text-white bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                    }`}
+                  >
+                    <CheckCircleIcon className="inline h-5 w-5 mr-2" /> 
+                    {submitting ? 'Submitting...' : 'Submit Application'}
+                  </button>
+                </div>
               )}
             </div>
           </div>

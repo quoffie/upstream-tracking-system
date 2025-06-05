@@ -1,5 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
   <rect width="100" height="100" fill="#0047AB"/>
-  <text x="50" y="50" font-family="Arial" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">PC</text>
-  <text x="50" y="70" font-family="Arial" font-size="12" fill="white" text-anchor="middle" dominant-baseline="middle">Ghana</text>
+  
+  <!-- PC text as path -->
+  <path d="M35.5,50c0-6.9,3.6-10.9,10.2-10.9h4.5v6.4h-3.1c-2.9,0-4.4,1.5-4.4,4.5v0.1c0,3,1.5,4.5,4.4,4.5h3.1v6.4h-4.5
+    C39.1,60.9,35.5,56.9,35.5,50z" fill="white"/>
+  <path d="M53,39.1h9.6c6.6,0,10.2,4,10.2,10.9c0,6.9-3.6,10.9-10.2,10.9H53V39.1z M62.6,54.5c2.9,0,4.4-1.5,4.4-4.5v-0.1
+    c0-3-1.5-4.5-4.4-4.5h-2.4v9H62.6z" fill="white"/>
+  
+  <!-- Ghana text as path -->
+  <path d="M38.1,70h2c1.1,0,1.8,0.7,1.8,1.6c0,1-0.7,1.6-1.8,1.6h-1.2v1.8h-0.8V70z M40,72.4c0.7,0,1-0.4,1-0.9
+    c0-0.6-0.3-0.9-1-0.9h-1.1v1.8H40z" fill="white"/>
+  <path d="M42.9,70h0.8v1.8h2.1V70h0.8v5h-0.8v-2.5h-2.1v2.5h-0.8V70z" fill="white"/>
+  <path d="M48.1,70h2.9v0.7h-2.1v1.4h1.9v0.7h-1.9v1.5h2.1v0.7h-2.9V70z" fill="white"/>
+  <path d="M52.2,70h0.8v4.3h2.1v0.7h-2.9V70z" fill="white"/>
+  <path d="M55.9,70h0.8v5h-0.8V70z" fill="white"/>
+  <path d="M58.1,70h2.9v0.7h-2.1v1.4h1.9v0.7h-1.9v1.5h2.1v0.7h-2.9V70z" fill="white"/>
 </svg>

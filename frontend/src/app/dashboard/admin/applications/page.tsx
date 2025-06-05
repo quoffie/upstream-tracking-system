@@ -12,12 +12,18 @@ import {
   AuditIcon,
   ProfileIcon
 } from '../../../components/icons/DashboardIcons';
+import { usePermits, useSubmit } from '../../../hooks/useApi';
+import { apiService } from '../../../services/api.service';
 
 export default function ApplicationsTrackerPage() {
   const [activeTab, setActiveTab] = useState('applications');
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTimeframe, setSelectedTimeframe] = useState('30');
+
+  // Use API hook to fetch permits
+  const { data: permitsData, loading, error, execute: refetchPermits } = usePermits();
+  const { submit: submitAction } = useSubmit();
 
   const sidebarItems = [
     { name: 'Dashboard', href: '/dashboard/admin', icon: HomeIcon, current: activeTab === 'overview' },
@@ -31,7 +37,7 @@ export default function ApplicationsTrackerPage() {
   ];
 
   // Mock data for applications
-  const applications = [
+  const applications = permitsData?.data || [
     {
       id: 'APP-2023-0050',
       type: 'Regular Permit',
@@ -125,29 +131,59 @@ export default function ApplicationsTrackerPage() {
     }
   ];
 
-  const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.applicant.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredApplications = applications.filter((app: any) => {
+    const matchesSearch = (app.company?.name || app.companyName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.id || app.referenceNumber || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (app.applicant || app.applicantName || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || app.status === filterStatus;
     const daysCutoff = parseInt(selectedTimeframe);
-    const matchesTimeframe = selectedTimeframe === 'all' || app.daysInSystem <= daysCutoff;
+    const matchesTimeframe = selectedTimeframe === 'all' || (app.daysInSystem || 0) <= daysCutoff;
     return matchesSearch && matchesStatus && matchesTimeframe;
   });
 
   const handleViewApplication = (id: string) => {
-    alert(`Viewing application details for ${id}`);
+    window.open(`/dashboard/admin/applications/${id}`, '_blank');
   };
 
-  const handleReassignApplication = (id: string) => {
+  const handleReassignApplication = async (id: string) => {
     const newAssignee = prompt('Enter new assignee name:');
     if (newAssignee) {
-      alert(`Reassigning application ${id} to ${newAssignee}`);
+      try {
+        await submitAction(
+          () => apiService.updatePermitStatus(id, 'IN_REVIEW', `Reassigned to ${newAssignee}`),
+          {
+            onSuccess: () => {
+              alert(`Application ${id} reassigned to ${newAssignee}`);
+              refetchPermits();
+            },
+            onError: (error) => {
+              alert(`Failed to reassign application: ${error}`);
+            }
+          }
+        );
+      } catch (error) {
+        console.error('Error reassigning application:', error);
+      }
     }
   };
 
-  const handleEscalateApplication = (id: string) => {
-    alert(`Escalating application ${id} to senior management`);
+  const handleEscalateApplication = async (id: string) => {
+    try {
+      await submitAction(
+        () => apiService.updatePermitStatus(id, 'ESCALATED', 'Escalated to senior management'),
+        {
+          onSuccess: () => {
+            alert(`Application ${id} escalated to senior management`);
+            refetchPermits();
+          },
+          onError: (error) => {
+            alert(`Failed to escalate application: ${error}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error escalating application:', error);
+    }
   };
 
   const handleDownloadReport = () => {
@@ -259,25 +295,25 @@ export default function ApplicationsTrackerPage() {
             <div className="bg-yellow-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-yellow-900">In Progress</h3>
               <p className="text-2xl font-bold text-yellow-600">
-                {filteredApplications.filter(a => a.status === 'In Progress').length}
+                {filteredApplications.filter((a: any) => a.status === 'In Progress').length}
               </p>
             </div>
             <div className="bg-orange-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-orange-900">Pending Approval</h3>
               <p className="text-2xl font-bold text-orange-600">
-                {filteredApplications.filter(a => a.status === 'Pending Approval').length}
+                {filteredApplications.filter((a: any) => a.status === 'Pending Approval').length}
               </p>
             </div>
             <div className="bg-green-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-green-900">Completed</h3>
               <p className="text-2xl font-bold text-green-600">
-                {filteredApplications.filter(a => a.status === 'Completed').length}
+                {filteredApplications.filter((a: any) => a.status === 'Completed').length}
               </p>
             </div>
             <div className="bg-red-50 rounded-lg p-4">
               <h3 className="text-sm font-medium text-red-900">Rejected</h3>
               <p className="text-2xl font-bold text-red-600">
-                {filteredApplications.filter(a => a.status === 'Rejected').length}
+                {filteredApplications.filter((a: any) => a.status === 'Rejected').length}
               </p>
             </div>
           </div>
@@ -323,70 +359,90 @@ export default function ApplicationsTrackerPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredApplications.map((application) => (
-                  <tr key={application.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {application.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.type}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {application.company}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.applicant}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.currentStage}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(application.status)}`}>
-                        {application.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.assignedTo}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(application.priority)}`}>
-                        {application.priority}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {application.daysInSystem} days
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(application.paymentStatus)}`}>
-                        {application.paymentStatus}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <button
-                        onClick={() => handleViewApplication(application.id)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        View
-                      </button>
-                      {application.status === 'In Progress' && (
-                        <>
-                          <button
-                            onClick={() => handleReassignApplication(application.id)}
-                            className="text-purple-600 hover:text-purple-900"
-                          >
-                            Reassign
-                          </button>
-                          <button
-                            onClick={() => handleEscalateApplication(application.id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            Escalate
-                          </button>
-                        </>
-                      )}
+                {loading ? (
+                  <tr>
+                    <td colSpan={11} className="px-6 py-4 text-center text-sm text-gray-500">
+                      Loading applications...
                     </td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan={11} className="px-6 py-4 text-center text-sm text-red-500">
+                      Error loading applications: {error}
+                    </td>
+                  </tr>
+                ) : filteredApplications.length === 0 ? (
+                  <tr>
+                    <td colSpan={11} className="px-6 py-4 text-center text-sm text-gray-500">
+                      No applications found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredApplications.map((application: any) => (
+                    <tr key={application.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {application.referenceNumber || application.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.type}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {application.company?.name || application.companyName || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.applicant || application.applicantName || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.currentStage || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(application.status)}`}>
+                          {application.status?.replace('_', ' ') || 'Unknown'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.assignedTo || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(application.priority)}`}>
+                          {application.priority?.replace('_', ' ') || 'Low'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {application.daysInSystem || 0} days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(application.paymentStatus)}`}>
+                          {application.paymentStatus || 'N/A'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button
+                          onClick={() => handleViewApplication(application.id)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          View
+                        </button>
+                        {(application.status === 'IN_PROGRESS' || application.status === 'PENDING') && (
+                          <>
+                            <button
+                              onClick={() => handleReassignApplication(application.id)}
+                              className="text-purple-600 hover:text-purple-900"
+                            >
+                              Reassign
+                            </button>
+                            <button
+                              onClick={() => handleEscalateApplication(application.id)}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Escalate
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

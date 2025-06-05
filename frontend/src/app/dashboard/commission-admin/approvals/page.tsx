@@ -159,19 +159,19 @@ export default function ApprovalsQueuePage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
           <div className="text-center">
-            <div className="text-3xl font-bold text-red-600">{approvals.filter(a => a.priority === 'High').length}</div>
+            <div className="text-3xl font-bold text-red-600">{approvals.filter((a: any) => a.priority === 'High').length}</div>
             <div className="text-sm text-gray-600">High Priority</div>
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
           <div className="text-center">
-            <div className="text-3xl font-bold text-yellow-600">{approvals.filter(a => a.daysWaiting > 10).length}</div>
+            <div className="text-3xl font-bold text-yellow-600">{approvals.filter((a: any) => a.daysWaiting > 10).length}</div>
             <div className="text-sm text-gray-600">Overdue</div>
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">{approvals.filter(a => a.status === 'Pending').length}</div>
+            <div className="text-3xl font-bold text-blue-600">{approvals.filter((a: any) => a.status === 'Pending').length}</div>
             <div className="text-sm text-gray-600">Pending Review</div>
           </div>
         </div>
