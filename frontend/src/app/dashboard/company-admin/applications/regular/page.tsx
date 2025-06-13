@@ -14,7 +14,7 @@ interface SidebarNavItem {
   current: boolean;
 }
 
-// Define the structure for form data
+// Define the structure for form data based on regular_permit_application.md
 interface RegularPermitFormData {
   // Section 1: Personal Details
   fullName: string;
@@ -23,96 +23,112 @@ interface RegularPermitFormData {
   nationality: string;
   passportNumber: string;
   passportExpiry: string;
-  nationalIdNumber?: string; // Optional
-  photo?: File | null;
   passportCopy?: File | null;
-  nationalIdCopy?: File | null;
+  photo?: File | null;
 
-  // Section 2: Contact Information
-  residentialAddress: string;
-  phoneNumber: string;
-  emailAddress: string;
-
-  // Section 3: Employment Details
+  // Section 2: Employment Details
   employerName: string;
   employerAddress: string;
-  employerContact: string;
+  contactPersonAtEmployer: string;
+  employerEmail: string;
+  employerPhone: string;
   jobTitle: string;
-  employmentStartDate: string;
-  contractType: string;
-  contractCopy?: File | null;
+  categoryOfWork: string;
 
-  // Section 4: Work Permit Specifics (Expatriate)
-  isExpatriate: boolean;
-  countryOfOrigin?: string;
-  visaType?: string;
-  visaNumber?: string;
-  visaExpiryDate?: string;
-  workPermitCategory?: string;
-  previousPermitNumber?: string; // If renewal
-  visaCopy?: File | null;
-  educationalCertificates?: File | null;
-  professionalCertificates?: File | null;
-  policeClearance?: File | null;
+  // Section 3: Work Permit Details
+  employmentStatus: string; // Local or Expatriate
+  workPermitNumber?: string; // if Expatriate
+  workPermitExpiry?: string; // if Expatriate
+  workPermitCopy?: File | null; // if Expatriate
 
-  // Section 5: Local Content (If applicable)
-  trainingProgramDetails?: string;
-  understudyName?: string;
-  understudyContact?: string;
+  // Section 4: Supporting Documents
+  employmentContract?: File | null;
+  medicalCertificate?: File | null;
+  bosietCertificate?: File | null;
+  policeReport?: File | null;
+  visa?: File | null; // if Expatriate
+  otherRelevantCertificate?: File | null;
+
+  // Section 5: Entry Point & Comments
+  proposedEntryPoint: string;
+  comments?: string;
 
   // Section 6: Declaration
   declarationAccepted: boolean;
-  signature?: string; // Or File for digital signature image
+  applicantSignature?: string;
+  declarationDate: string;
 
-  // Section 7: Payment
-  paymentMethod: string;
-  transactionId?: string;
+  // Section 7: Payment Evidence
   paymentReceipt?: File | null;
+  transactionReferenceNumber: string;
 
-  // Section 8: Additional Documents (Optional)
-  coverLetter?: File | null;
-  otherSupportingDocs?: File[] | null;
+  // Section 8: For Official Use Only (read-only fields)
+  receivedBy?: string;
+  receivedDate?: string;
+  pcReviewerComments?: string;
+  commissionAdminDecision?: string;
+  gisDecision?: string;
+  permitNumberIssued?: string;
+  issueDate?: string;
 }
 
 const initialFormData: RegularPermitFormData = {
-  // Initialize with default/empty values
+  // Section 1: Personal Details
   fullName: '',
   gender: '',
   dob: '',
   nationality: '',
   passportNumber: '',
   passportExpiry: '',
-  photo: null,
   passportCopy: null,
+  photo: null,
 
-  residentialAddress: '',
-  phoneNumber: '',
-  emailAddress: '',
-
+  // Section 2: Employment Details
   employerName: '',
   employerAddress: '',
-  employerContact: '',
+  contactPersonAtEmployer: '',
+  employerEmail: '',
+  employerPhone: '',
   jobTitle: '',
-  employmentStartDate: '',
-  contractType: '',
-  contractCopy: null,
+  categoryOfWork: '',
 
-  isExpatriate: false,
+  // Section 3: Work Permit Details
+  employmentStatus: '',
+  workPermitNumber: '',
+  workPermitExpiry: '',
+  workPermitCopy: null,
 
+  // Section 4: Supporting Documents
+  employmentContract: null,
+  medicalCertificate: null,
+  bosietCertificate: null,
+  policeReport: null,
+  visa: null,
+  otherRelevantCertificate: null,
+
+  // Section 5: Entry Point & Comments
+  proposedEntryPoint: '',
+  comments: '',
+
+  // Section 6: Declaration
   declarationAccepted: false,
+  applicantSignature: '',
+  declarationDate: '',
 
-  paymentMethod: '',
+  // Section 7: Payment Evidence
+  paymentReceipt: null,
+  transactionReferenceNumber: ''
 };
 
 const steps = [
   { id: 1, name: 'Personal Details' },
-  { id: 2, name: 'Contact Information' },
-  { id: 3, name: 'Employment Details' },
-  { id: 4, name: 'Work Permit Specifics' },
-  { id: 5, name: 'Local Content' }, // Optional based on logic
+  { id: 2, name: 'Employment Details' },
+  { id: 3, name: 'Work Permit Details' },
+  { id: 4, name: 'Supporting Documents' },
+  { id: 5, name: 'Entry Point & Comments' },
   { id: 6, name: 'Declaration' },
-  { id: 7, name: 'Payment' },
-  { id: 8, name: 'Review & Submit' }, // Added review step
+  { id: 7, name: 'Payment Evidence' },
+  { id: 8, name: 'Review & Submit' }
 ];
 
 const RegularPermitApplicationPage: React.FC = () => {
@@ -198,41 +214,36 @@ const RegularPermitApplicationPage: React.FC = () => {
           }
         });
         
-        // Add file fields
+        // Add file fields based on new interface
         if (formData.photo) {
           submitData.append('photo', formData.photo);
         }
         if (formData.passportCopy) {
           submitData.append('passportCopy', formData.passportCopy);
         }
-        if (formData.nationalIdCopy) {
-          submitData.append('nationalIdCopy', formData.nationalIdCopy);
+        if (formData.workPermitCopy) {
+          submitData.append('workPermitCopy', formData.workPermitCopy);
         }
-        if (formData.contractCopy) {
-          submitData.append('contractCopy', formData.contractCopy);
+        if (formData.employmentContract) {
+          submitData.append('employmentContract', formData.employmentContract);
         }
-        if (formData.visaCopy) {
-          submitData.append('visaCopy', formData.visaCopy);
+        if (formData.medicalCertificate) {
+          submitData.append('medicalCertificate', formData.medicalCertificate);
         }
-        if (formData.educationalCertificates) {
-          submitData.append('educationalCertificates', formData.educationalCertificates);
+        if (formData.bosietCertificate) {
+          submitData.append('bosietCertificate', formData.bosietCertificate);
         }
-        if (formData.professionalCertificates) {
-          submitData.append('professionalCertificates', formData.professionalCertificates);
+        if (formData.policeReport) {
+          submitData.append('policeReport', formData.policeReport);
         }
-        if (formData.policeClearance) {
-          submitData.append('policeClearance', formData.policeClearance);
+        if (formData.visa) {
+          submitData.append('visa', formData.visa);
+        }
+        if (formData.otherRelevantCertificate) {
+          submitData.append('otherRelevantCertificate', formData.otherRelevantCertificate);
         }
         if (formData.paymentReceipt) {
           submitData.append('paymentReceipt', formData.paymentReceipt);
-        }
-        if (formData.coverLetter) {
-          submitData.append('coverLetter', formData.coverLetter);
-        }
-        if (formData.otherSupportingDocs) {
-          formData.otherSupportingDocs.forEach((doc, index) => {
-            submitData.append(`otherSupportingDocs[${index}]`, doc);
-          });
         }
         
         // Add permit type

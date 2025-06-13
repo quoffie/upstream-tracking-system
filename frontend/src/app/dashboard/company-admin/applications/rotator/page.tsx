@@ -14,7 +14,7 @@ interface SidebarNavItem {
   current: boolean;
 }
 
-// Define the structure for form data
+// Define the structure for form data based on rotator_permit_application.md
 interface RotatorPermitFormData {
   // Section 1: Personal Details
   fullName: string;
@@ -22,101 +22,115 @@ interface RotatorPermitFormData {
   dob: string;
   nationality: string;
   passportNumber: string;
-  passportIssueDate: string;
-  passportExpiryDate: string;
-  placeOfBirth: string;
-  photo?: File | null;
+  passportExpiry: string;
   passportCopy?: File | null;
+  photo?: File | null;
 
   // Section 2: Employment Details
   employerName: string;
-  employerBusinessNature: string;
   employerAddress: string;
-  employerPhone: string;
+  contactPersonAtEmployer: string;
   employerEmail: string;
-  jobTitleInCompany: string;
-  jobDescription?: string;
-  employmentContractCopy?: File | null;
+  employerPhone: string;
+  jobTitle: string;
+  categoryOfWork: string;
 
   // Section 3: Rotator Status & Work Permit Details
-  isNewApplication: boolean; // New or Renewal
-  previousPermitNumber?: string; // If renewal
-  intendedRotationCycle: string; // e.g., 28/28, 60/30
-  expectedStartDate: string;
-  durationOfAssignment: string; // e.g., 12 months
-  workPermitCopyPrevious?: File | null; // If renewal
-  relevantCertificates?: File | null; // e.g., BOSIET, HUET
+  rotatorStatus: boolean; // Must be checked for rotator
+  employmentStatus: string; // Local or Expatriate
+  workPermitNumber?: string; // if Expatriate
+  workPermitExpiry?: string; // if Expatriate
+  workPermitCopy?: File | null; // if Expatriate
 
-  // Section 4: Entry & Assignment Details
-  pointOfEntry: string;
-  offshoreInstallationName?: string;
-  onshoreLocationName?: string;
+  // Section 4: Supporting Documents
+  employmentContract?: File | null;
+  medicalCertificate?: File | null;
+  bosietCertificate?: File | null;
+  policeReport?: File | null;
+  visa?: File | null; // if Expatriate
+  otherRelevantCertificate?: File | null;
+
+  // Section 5: Entry Point & Comments
+  proposedEntryPoint: string;
   comments?: string;
-
-  // Section 5: Supporting Documents
-  companyRegistrationCertCopy?: File | null;
-  taxClearanceCertCopy?: File | null;
-  letterOfIntentCopy?: File | null; // From operator/main contractor
-  cvCopy?: File | null;
 
   // Section 6: Declaration
   declarationAccepted: boolean;
-  signature?: string; // Or File for digital signature image
-  dateOfDeclaration: string;
+  applicantSignature?: string;
+  declarationDate: string;
 
-  // Section 7: Payment
-  paymentMethod: string;
-  transactionId?: string;
+  // Section 7: Payment Evidence
   paymentReceipt?: File | null;
+  transactionReferenceNumber: string;
 
-  // Section 8: Additional Documents (Optional)
-  otherSupportingDocs?: File[] | null;
+  // Section 8: For Official Use Only (read-only fields)
+  receivedBy?: string;
+  receivedDate?: string;
+  pcReviewerComments?: string;
+  commissionAdminDecision?: string;
+  gisDecision?: string;
+  permitNumberIssued?: string;
+  issueDate?: string;
 }
 
 const initialFormData: RotatorPermitFormData = {
-  // Initialize with default/empty values
+  // Section 1: Personal Details
   fullName: '',
   gender: '',
   dob: '',
   nationality: '',
   passportNumber: '',
-  passportIssueDate: '',
-  passportExpiryDate: '',
-  placeOfBirth: '',
-  photo: null,
+  passportExpiry: '',
   passportCopy: null,
+  photo: null,
 
+  // Section 2: Employment Details
   employerName: '',
-  employerBusinessNature: '',
   employerAddress: '',
-  employerPhone: '',
+  contactPersonAtEmployer: '',
   employerEmail: '',
-  jobTitleInCompany: '',
-  employmentContractCopy: null,
+  employerPhone: '',
+  jobTitle: '',
+  categoryOfWork: '',
 
-  isNewApplication: true,
-  intendedRotationCycle: '',
-  expectedStartDate: '',
-  durationOfAssignment: '',
-  relevantCertificates: null,
+  // Section 3: Rotator Status & Work Permit Details
+  rotatorStatus: true, // Must be checked for rotator
+  employmentStatus: '',
+  workPermitNumber: '',
+  workPermitExpiry: '',
+  workPermitCopy: null,
 
-  pointOfEntry: '',
+  // Section 4: Supporting Documents
+  employmentContract: null,
+  medicalCertificate: null,
+  bosietCertificate: null,
+  policeReport: null,
+  visa: null,
+  otherRelevantCertificate: null,
 
+  // Section 5: Entry Point & Comments
+  proposedEntryPoint: '',
+  comments: '',
+
+  // Section 6: Declaration
   declarationAccepted: false,
-  dateOfDeclaration: '',
+  applicantSignature: '',
+  declarationDate: '',
 
-  paymentMethod: '',
+  // Section 7: Payment Evidence
+  paymentReceipt: null,
+  transactionReferenceNumber: ''
 };
 
 const steps = [
   { id: 1, name: 'Personal Details' },
   { id: 2, name: 'Employment Details' },
-  { id: 3, name: 'Rotator Status & Permit' },
-  { id: 4, name: 'Entry & Assignment' },
-  { id: 5, name: 'Supporting Documents' },
+  { id: 3, name: 'Rotator Status & Work Permit Details' },
+  { id: 4, name: 'Supporting Documents' },
+  { id: 5, name: 'Entry Point & Comments' },
   { id: 6, name: 'Declaration' },
-  { id: 7, name: 'Payment' },
-  { id: 8, name: 'Review & Submit' },
+  { id: 7, name: 'Payment Evidence' },
+  { id: 8, name: 'Review & Submit' }
 ];
 
 const RotatorPermitApplicationPage: React.FC = () => {
@@ -200,41 +214,36 @@ const RotatorPermitApplicationPage: React.FC = () => {
           }
         });
         
-        // Add file fields
+        // Add file fields based on new interface
         if (formData.photo) {
           submitData.append('photo', formData.photo);
         }
         if (formData.passportCopy) {
           submitData.append('passportCopy', formData.passportCopy);
         }
-        if (formData.employmentContractCopy) {
-          submitData.append('employmentContractCopy', formData.employmentContractCopy);
+        if (formData.workPermitCopy) {
+          submitData.append('workPermitCopy', formData.workPermitCopy);
         }
-        if (formData.workPermitCopyPrevious) {
-          submitData.append('workPermitCopyPrevious', formData.workPermitCopyPrevious);
+        if (formData.employmentContract) {
+          submitData.append('employmentContract', formData.employmentContract);
         }
-        if (formData.relevantCertificates) {
-          submitData.append('relevantCertificates', formData.relevantCertificates);
+        if (formData.medicalCertificate) {
+          submitData.append('medicalCertificate', formData.medicalCertificate);
         }
-        if (formData.companyRegistrationCertCopy) {
-          submitData.append('companyRegistrationCertCopy', formData.companyRegistrationCertCopy);
+        if (formData.bosietCertificate) {
+          submitData.append('bosietCertificate', formData.bosietCertificate);
         }
-        if (formData.taxClearanceCertCopy) {
-          submitData.append('taxClearanceCertCopy', formData.taxClearanceCertCopy);
+        if (formData.policeReport) {
+          submitData.append('policeReport', formData.policeReport);
         }
-        if (formData.letterOfIntentCopy) {
-          submitData.append('letterOfIntentCopy', formData.letterOfIntentCopy);
+        if (formData.visa) {
+          submitData.append('visa', formData.visa);
         }
-        if (formData.cvCopy) {
-          submitData.append('cvCopy', formData.cvCopy);
+        if (formData.otherRelevantCertificate) {
+          submitData.append('otherRelevantCertificate', formData.otherRelevantCertificate);
         }
         if (formData.paymentReceipt) {
           submitData.append('paymentReceipt', formData.paymentReceipt);
-        }
-        if (formData.otherSupportingDocs) {
-          formData.otherSupportingDocs.forEach((file, index) => {
-            submitData.append(`otherSupportingDocs[${index}]`, file);
-          });
         }
         
         // Add permit type
