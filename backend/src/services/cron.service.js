@@ -164,7 +164,7 @@ class CronService {
       // Find unread important notifications older than threshold
       const unacknowledgedAlerts = await this.prisma.notification.findMany({
         where: {
-          read: false,
+          isRead: false,
           createdAt: {
             lt: escalationThreshold
           },

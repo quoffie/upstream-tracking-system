@@ -76,6 +76,25 @@ const getCommonMenuItems = (pathname: string): MenuItem[] => [
 // Company Admin Menu Items
 export const getCompanyAdminMenuItems = (pathname: string): MenuItem[] => [
   {
+    name: 'Company Registration',
+    href: '/dashboard/company-admin/company-registration',
+    icon: BuildingOfficeIcon, // Using existing icon, consider a more specific one if available
+    current: pathname.startsWith('/dashboard/company-admin/company-registration'),
+    children: [
+      {
+        name: 'New Registration',
+        href: '/dashboard/company-admin/company-registration/new',
+        icon: DocumentTextIcon, // Or a 'plus' icon
+        current: pathname === '/dashboard/company-admin/company-registration/new'
+      },
+      {
+        name: 'View My Registrations',
+        href: '/dashboard/company-admin/company-registration/view',
+        icon: ClipboardDocumentListIcon,
+        current: pathname === '/dashboard/company-admin/company-registration/view'
+      }
+    ]
+  },  {
     name: 'Dashboard (Home)',
     href: '/dashboard/company-admin',
     icon: Squares2X2Icon,
@@ -192,9 +211,28 @@ export const getCompanyAdminMenuItems = (pathname: string): MenuItem[] => [
     ]
   },
   {
+    name: 'Permit Applications (Company)',
+    href: '/dashboard/company-admin/company-permits',
+    icon: DocumentCheckIcon, // Or a more specific permit icon
+    current: pathname.startsWith('/dashboard/company-admin/company-permits'),
+    children: [
+      {
+        name: 'Apply for New Permit',
+        href: '/dashboard/company-admin/company-permits/apply',
+        icon: DocumentTextIcon,
+        current: pathname === '/dashboard/company-admin/company-permits/apply'
+      },
+      {
+        name: 'View Company Permits',
+        href: '/dashboard/company-admin/company-permits/view',
+        icon: ClipboardDocumentCheckIcon,
+        current: pathname === '/dashboard/company-admin/company-permits/view'
+      }
+    ]
+  },
+  {
     name: 'JV Compliance',
-    href: '/dashboard/company-admin/jv-compliance',
-    icon: BuildingOfficeIcon,
+    href: '/dashboard/company-admin/jv-compliance',    icon: BuildingOfficeIcon,
     current: pathname.startsWith('/dashboard/company-admin/jv-compliance'),
     children: [
       {
@@ -266,6 +304,155 @@ export const getCompanyAdminMenuItems = (pathname: string): MenuItem[] => [
         href: '/dashboard/company-admin/documents/history',
         icon: ClockIcon,
         current: pathname === '/dashboard/company-admin/documents/history'
+      }
+    ]
+  },
+  ...getCommonMenuItems(pathname)
+];
+
+// PC Staff Menu Items
+export const getPCStaffMenuItems = (pathname: string): MenuItem[] => [
+  {
+    name: 'Dashboard (Home)',
+    href: '/dashboard/pc-staff',
+    icon: Squares2X2Icon,
+    current: pathname === '/dashboard/pc-staff'
+  },
+  {
+    name: 'Company Registrations',
+    href: '/dashboard/pc-staff/company-registrations',
+    icon: BuildingOfficeIcon,
+    current: pathname.startsWith('/dashboard/pc-staff/company-registrations'),
+    children: [
+      {
+        name: 'Review New Applications',
+        href: '/dashboard/pc-staff/company-registrations/review-new',
+        icon: DocumentMagnifyingGlassIcon,
+        current: pathname === '/dashboard/pc-staff/company-registrations/review-new'
+      },
+      {
+        name: 'All Company Registrations',
+        href: '/dashboard/pc-staff/company-registrations/all',
+        icon: ClipboardDocumentListIcon,
+        current: pathname === '/dashboard/pc-staff/company-registrations/all'
+      }
+    ]
+  },
+  {
+    name: 'Permit Applications Review',
+    href: '/dashboard/pc-staff/permit-applications',
+    icon: ShieldCheckIcon,
+    current: pathname.startsWith('/dashboard/pc-staff/permit-applications'),
+    children: [
+      {
+        name: 'Company Permit Applications',
+        href: '/dashboard/pc-staff/permit-applications/company',
+        icon: DocumentCheckIcon,
+        current: pathname === '/dashboard/pc-staff/permit-applications/company'
+      },
+      {
+        name: 'Personnel Permit Applications',
+        href: '/dashboard/pc-staff/permit-applications/personnel',
+        icon: UserIcon, // Or a specific personnel permit icon
+        current: pathname === '/dashboard/pc-staff/permit-applications/personnel'
+      },
+      {
+        name: 'All Permit Applications',
+        href: '/dashboard/pc-staff/permit-applications/all',
+        icon: ClipboardDocumentCheckIcon,
+        current: pathname === '/dashboard/pc-staff/permit-applications/all'
+      }
+    ]
+  },
+  {
+    name: 'Compliance Monitoring',
+    href: '/dashboard/pc-staff/compliance',
+    icon: ShieldExclamationIcon,
+    current: pathname.startsWith('/dashboard/pc-staff/compliance'),
+    children: [
+      {
+        name: 'Expired Permits',
+        href: '/dashboard/pc-staff/compliance/expired-permits',
+        icon: ExclamationTriangleIcon,
+        current: pathname === '/dashboard/pc-staff/compliance/expired-permits'
+      },
+      {
+        name: 'Non-Compliant Companies',
+        href: '/dashboard/pc-staff/compliance/non-compliant-companies',
+        icon: BuildingOfficeIcon, // Consider a warning variant
+        current: pathname === '/dashboard/pc-staff/compliance/non-compliant-companies'
+      },
+      {
+        name: 'Local Content Violations',
+        href: '/dashboard/pc-staff/compliance/lc-violations',
+        icon: GlobeAltIcon, // Or specific local content icon
+        current: pathname === '/dashboard/pc-staff/compliance/lc-violations'
+      }
+    ]
+  },
+  {
+    name: 'Inspections',
+    href: '/dashboard/pc-staff/inspections',
+    icon: MagnifyingGlassIcon,
+    current: pathname.startsWith('/dashboard/pc-staff/inspections'),
+    children: [
+      {
+        name: 'Schedule Inspection',
+        href: '/dashboard/pc-staff/inspections/schedule',
+        icon: CalendarIcon,
+        current: pathname === '/dashboard/pc-staff/inspections/schedule'
+      },
+      {
+        name: 'View Inspection Reports',
+        href: '/dashboard/pc-staff/inspections/reports',
+        icon: DocumentChartBarIcon,
+        current: pathname === '/dashboard/pc-staff/inspections/reports'
+      }
+    ]
+  },
+  {
+    name: 'Penalties',
+    href: '/dashboard/pc-staff/penalties',
+    icon: ExclamationTriangleIcon, // Or a gavel icon
+    current: pathname.startsWith('/dashboard/pc-staff/penalties'),
+    children: [
+      {
+        name: 'Issue Fines',
+        href: '/dashboard/pc-staff/penalties/issue',
+        icon: CurrencyDollarIcon,
+        current: pathname === '/dashboard/pc-staff/penalties/issue'
+      },
+      {
+        name: 'Track Sanctions',
+        href: '/dashboard/pc-staff/penalties/track',
+        icon: FunnelIcon, // Or a tracking icon
+        current: pathname === '/dashboard/pc-staff/penalties/track'
+      }
+    ]
+  },
+  {
+    name: 'Reports & Analytics',
+    href: '/dashboard/pc-staff/reports',
+    icon: ChartPieIcon,
+    current: pathname.startsWith('/dashboard/pc-staff/reports'),
+    children: [
+      {
+        name: 'Permit Issuance Stats',
+        href: '/dashboard/pc-staff/reports/permit-stats',
+        icon: ChartBarIcon,
+        current: pathname === '/dashboard/pc-staff/reports/permit-stats'
+      },
+      {
+        name: 'Local Content Compliance',
+        href: '/dashboard/pc-staff/reports/lc-compliance',
+        icon: GlobeAltIcon,
+        current: pathname === '/dashboard/pc-staff/reports/lc-compliance'
+      },
+      {
+        name: 'JV Equity Overview',
+        href: '/dashboard/pc-staff/reports/jv-equity',
+        icon: BuildingOfficeIcon,
+        current: pathname === '/dashboard/pc-staff/reports/jv-equity'
       }
     ]
   },
@@ -584,12 +771,109 @@ export const getCommissionAdminMenuItems = (pathname: string): MenuItem[] => [
         icon: LockClosedIcon,
         current: pathname === '/dashboard/commission-admin/users/passwords'
       }
-    ]
+    ]```
   }
 ];
 
+// Personnel Menu Items
+export const getPersonnelMenuItems = (pathname: string): MenuItem[] => [
+  {
+    name: 'Dashboard (Home)',
+    href: '/dashboard/personnel',
+    icon: Squares2X2Icon,
+    current: pathname === '/dashboard/personnel'
+  },
+  {
+    name: 'My Permit Applications',
+    href: '/dashboard/personnel/permit-applications',
+    icon: DocumentCheckIcon,
+    current: pathname.startsWith('/dashboard/personnel/permit-applications'),
+    children: [
+      {
+        name: 'Apply for Work Permit',
+        href: '/dashboard/personnel/permit-applications/apply-work-permit',
+        icon: BriefcaseIcon,
+        current: pathname === '/dashboard/personnel/permit-applications/apply-work-permit'
+      },
+      {
+        name: 'View My Permits',
+        href: '/dashboard/personnel/permit-applications/view-my-permits',
+        icon: ClipboardDocumentCheckIcon,
+        current: pathname === '/dashboard/personnel/permit-applications/view-my-permits'
+      },
+      {
+        name: 'Renewal Reminders',
+        href: '/dashboard/personnel/permit-applications/renewal-reminders',
+        icon: BellIcon,
+        current: pathname === '/dashboard/personnel/permit-applications/renewal-reminders'
+      }
+    ]
+  },
+  {
+    name: 'Medical & Safety',
+    href: '/dashboard/personnel/medical-safety',
+    icon: HeartIcon,
+    current: pathname.startsWith('/dashboard/personnel/medical-safety'),
+    children: [
+      {
+        name: 'Upload Medical Certificates',
+        href: '/dashboard/personnel/medical-safety/upload-medical',
+        icon: ArrowDownTrayIcon,
+        current: pathname === '/dashboard/personnel/medical-safety/upload-medical'
+      },
+      {
+        name: 'BOSIET Expiry Alerts',
+        href: '/dashboard/personnel/medical-safety/bosiet-alerts',
+        icon: ShieldExclamationIcon,
+        current: pathname === '/dashboard/personnel/medical-safety/bosiet-alerts'
+      }
+    ]
+  },
+  {
+    name: 'Training Records',
+    href: '/dashboard/personnel/training',
+    icon: AcademicCapIcon,
+    current: pathname.startsWith('/dashboard/personnel/training'),
+    children: [
+      {
+        name: 'Completed Courses',
+        href: '/dashboard/personnel/training/completed',
+        icon: TrophyIcon,
+        current: pathname === '/dashboard/personnel/training/completed'
+      },
+      {
+        name: 'Upcoming Training',
+        href: '/dashboard/personnel/training/upcoming',
+        icon: CalendarIcon,
+        current: pathname === '/dashboard/personnel/training/upcoming'
+      }
+    ]
+  },
+  {
+    name: 'Job Applications',
+    href: '/dashboard/personnel/jobs',
+    icon: BriefcaseIcon, // Or MagnifyingGlassIcon for job search
+    current: pathname.startsWith('/dashboard/personnel/jobs'),
+    children: [
+      {
+        name: 'Apply for Offshore Roles',
+        href: '/dashboard/personnel/jobs/apply',
+        icon: DocumentTextIcon,
+        current: pathname === '/dashboard/personnel/jobs/apply'
+      },
+      {
+        name: 'View Succession Opportunities',
+        href: '/dashboard/personnel/jobs/succession',
+        icon: UsersIcon,
+        current: pathname === '/dashboard/personnel/jobs/succession'
+      }
+    ]
+  },
+  ...getCommonMenuItems(pathname)
+];
+
 // JV Coordinator Menu Items
-export const getJVCoordinatorMenuItems = (pathname: string): MenuItem[] => [
+```export const getJVCoordinatorMenuItems = (pathname: string): MenuItem[] => [
   {
     name: 'JV Formation',
     href: '/dashboard/jv-coordinator/formation',
@@ -1006,30 +1290,32 @@ export const getInspectorMenuItems = (pathname: string): MenuItem[] => [
   }
 ];
 
-// Generic function to get menu items by role
+// Function to get menu items based on role
 export const getMenuItemsByRole = (role: string, pathname: string): MenuItem[] => {
-  switch (role) {
-    case 'COMPANY_ADMIN':
+  switch (role.toLowerCase()) {
+    case 'company admin':
+    case 'company_admin':
       return getCompanyAdminMenuItems(pathname);
-    case 'COMMISSION_ADMIN':
-    case 'ADMIN':
-      return getCommissionAdminMenuItems(pathname);
-    case 'JV_COORDINATOR':
+    case 'pc staff':
+    case 'pc_staff':
+      return getPCStaffMenuItems(pathname);
+    case 'jv coordinator':
+    case 'jv_coordinator':
       return getJVCoordinatorMenuItems(pathname);
-    case 'COMPLIANCE_OFFICER':
+    case 'compliance officer':
+    case 'compliance_officer':
       return getComplianceOfficerMenuItems(pathname);
-    case 'IMMIGRATION_OFFICER':
-      return getImmigrationMenuItems(pathname);
-    case 'PERSONNEL':
+    case 'immigration officer':
+    case 'immigration_officer':
+      return getImmigrationOfficerMenuItems(pathname);
+    case 'personnel':
       return getPersonnelMenuItems(pathname);
-    case 'FINANCE_OFFICER':
-      return getFinanceMenuItems(pathname);
-    case 'LOCAL_CONTENT_OFFICER':
-      return getLocalContentMenuItems(pathname);
-    case 'INSPECTOR':
-      return getInspectorMenuItems(pathname);
+    case 'commission admin':
+    case 'commission_admin':
+    case 'ceo': // Assuming CEO might be an alias for Commission Admin
+      return getCommissionAdminMenuItems(pathname);
     default:
-      return [];
+      return []; // Or a default set of menu items for unknown roles
   }
 };
 

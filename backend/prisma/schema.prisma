@@ -37,6 +37,25 @@ enum PermitType {
   PERSONNEL
   INSTALLATION
   ENVIRONMENTAL
+  WORK_PERMIT // Specific for personnel
+}
+
+enum PermitStatus {
+  DRAFT
+  SUBMITTED_TO_PC
+  PENDING_PC_APPROVAL
+  FORWARDED_TO_GIS
+  PENDING_GIS_APPROVAL
+  APPROVED_BY_GIS // Final approval for personnel permits
+  REJECTED_BY_PC
+  REJECTED_BY_GIS
+  UNDER_REVIEW // General status for other permit types
+  REQUIRES_ADDITIONAL_INFO
+  APPROVED // General status for other permit types
+  REJECTED // General status for other permit types
+  ACTIVE
+  EXPIRED
+  CANCELLED
 }
 
 enum CompanyCategory {
@@ -160,13 +179,38 @@ model Company {
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
   users                   User[]
-  permits                 Permit[]
   personnel               Personnel[]
   documents               Document[]
   jvCompanies             JVCompany[]
   localContentPlans       LCPlan[]
   performanceReports      LCPerformanceReport[]
   companyRegistration     CompanyRegistration? @relation("RegistrationToCompany")
+  permits                 Permit[] @relation("CompanyPermits")
+}
+
+model Permit {
+  id                      String    @id @default(uuid())
+  permitType              PermitType
+  status                  PermitStatus @default(DRAFT)
+  applicationDate         DateTime   @default(now())
+  approvalDate            DateTime?
+  expiryDate              DateTime?
+  referenceNumber         String     @unique @default(cuid()) // Auto-generated unique ref number
+  applicationDetails      Json?      // Form specific data for the permit type
+  rejectionReason         String?
+  reviewComments          String?
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+
+  company                 Company?   @relation("CompanyPermits", fields: [companyId], references: [id])
+  companyId               String?    // Optional: A permit might be for personnel not directly tied to a company initially, or company applies
+
+  personnel               Personnel? @relation("PersonnelPermits", fields: [personnelId], references: [id])
+  personnelId             String?    // Optional: For personnel-specific permits like work permits
+
+  documents               Document[] // Supporting documents for the permit application
+  payments                Payment[]  @relation("PermitPayments")
+  inspections             Inspection[]
 }
 
 model JVCompany {
@@ -198,6 +242,7 @@ model Personnel {
   workPermitExpiry        DateTime?
   medicalCertExpiry       DateTime?
   bosietCertExpiry        DateTime?
+  permits                 Permit[] @relation("PersonnelPermits")
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
   company                 Company   @relation(fields: [companyId], references: [id])
@@ -205,30 +250,9 @@ model Personnel {
   user                    User?     @relation(fields: [userId], references: [id])
   userId                  String?   @unique
   documents               Document[]
-  permits                 Permit[]  @relation("PersonnelPermits")
 }
 
-model Permit {
-  id                      String    @id @default(uuid())
-  permitNumber            String    @unique
-  permitType              PermitType
-  applicationDate         DateTime  @default(now())
-  issueDate               DateTime?
-  expiryDate              DateTime?
-  status                  ApplicationStatus @default(DRAFT)
-  projectName             String?
-  projectDescription      String?
-  localContentPlan        String?
-  rejectionReason         String?
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
-  company                 Company   @relation(fields: [companyId], references: [id])
-  companyId               String
-  personnel               Personnel[] @relation("PersonnelPermits")
-  documents               Document[]
-  payments                Payment[]
-  inspections             Inspection[]
-}
+
 
 model LCPlan {
   id                      String    @id @default(uuid())
@@ -314,7 +338,7 @@ model Payment {
   updatedAt               DateTime  @updatedAt
   companyRegistration     CompanyRegistration? @relation("CompanyRegistrationPayment", fields: [companyRegistrationId], references: [id])
   companyRegistrationId   String?              @unique
-  permit                  Permit    @relation(fields: [permitId], references: [id])
+  permit                  Permit    @relation("PermitPayments", fields: [permitId], references: [id])
   permitId                String
 }
 
