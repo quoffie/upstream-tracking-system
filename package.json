@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "client:dev": "vite",
+    "client:dev": "cd frontend && npm run dev",
     "server:dev": "nodemon"
   },
   "dependencies": {

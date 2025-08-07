@@ -1,6 +1,6 @@
 # TODO:
 
-- [x] remove-duplicate-login: Remove the duplicate /login directory and page (priority: High)
-- [x] remove-duplicate-register: Remove the duplicate /register directory and page (priority: High)
-- [x] check-references: Search for any remaining references to /login or /register and update them to /auth/login and /auth/register (priority: Medium)
-- [x] test-auth-routes: Test that authentication redirects work correctly after cleanup (priority: Medium)
+- [x] fix-port-conflict: Fix backend port conflict error (EADDRINUSE on port 3001) (priority: High)
+- [x] check-typescript-errors: Check for TypeScript compilation errors in the frontend (priority: High)
+- [x] verify-backend-build: Verify backend builds successfully after recent changes (priority: Medium)
+- [x] test-application: Test the application to ensure it runs without errors (priority: Medium)

@@ -27,6 +27,7 @@ export default function NewRegistrationPage() {
     incorporationDate: '',
     registrationType: '',
     businessType: '',
+    permitCategory: '', // SPECIALIZED or GENERAL
     
     // Contact Information
     address: '',
@@ -50,6 +51,7 @@ export default function NewRegistrationPage() {
     numberOfEmployees: '',
     operationalAreas: [] as string[],
     servicesOffered: [] as string[],
+    selectedActivities: [] as string[], // Dynamic activities based on permit category
     
     // Documents
     incorporationCertificate: null,
@@ -78,6 +80,70 @@ export default function NewRegistrationPage() {
     'Consulting'
   ];
 
+  const permitCategories = [
+    { value: 'SPECIALIZED', label: 'Specialized Category' },
+    { value: 'GENERAL', label: 'General Category' }
+  ];
+
+  // Specialized Category Activities
+  const specializedActivities = [
+    'Aviation Support Services',
+    'Calibration Services',
+    'Data Measurement Services',
+    'Diving and Hyperbaric Services',
+    'Dredging Services',
+    'Drilling/Production Services',
+    'Environmental Services',
+    'Exploration Services',
+    'Installation Services / Marine Contracting',
+    'Integrated Services',
+    'Integrity Test and Inspection Services',
+    'Laboratory Services',
+    'Major Construction Services',
+    'Marine Support Services',
+    'Onshore/Offshore Pipeline Services',
+    'Research and Development Services',
+    'Rope Access',
+    'Special Transportation',
+    'Surveying/Positioning Services',
+    'Technical Consultancy',
+    'Waste Management Services'
+  ];
+
+  // General Category Activities
+  const generalActivities = [
+    'Automobile Services',
+    'Banking/Financial Services',
+    'Construction/Rehabilitation/Fabrication Works',
+    'Equipment/Material Supply Services',
+    'General Consultancy Services',
+    'Haulage / Freight / Clearing and Forwarding (International/Domestic)',
+    'Heavy Duty Equipment Supply',
+    'Hospital / Medical Services',
+    'Hospitality Services',
+    'Information Technology / Communication Services',
+    'Insurance Service',
+    'Manpower Supply',
+    'Maintenance',
+    'Printing Services',
+    'Protocol and Logistics Services',
+    'Sanitation',
+    'Supply of Petroleum Products',
+    'Supply',
+    'Water Borehole Services',
+    'Works'
+  ];
+
+  // Get available activities based on selected permit category
+  const getAvailableActivities = () => {
+    if (formData.permitCategory === 'SPECIALIZED') {
+      return specializedActivities;
+    } else if (formData.permitCategory === 'GENERAL') {
+      return generalActivities;
+    }
+    return [];
+  };
+
   const operationalAreas = [
     'Western Region',
     'Central Region',
@@ -94,7 +160,14 @@ export default function NewRegistrationPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => {
+      const newData = { ...prev, [name]: value };
+      // Reset selected activities when permit category changes
+      if (name === 'permitCategory') {
+        newData.selectedActivities = [];
+      }
+      return newData;
+    });
   };
 
   const handleCheckboxChange = (name: string, value: string) => {
@@ -140,6 +213,7 @@ export default function NewRegistrationPage() {
       // Add arrays as JSON strings
       submitData.append('operationalAreas', JSON.stringify(formData.operationalAreas));
       submitData.append('servicesOffered', JSON.stringify(formData.servicesOffered));
+      submitData.append('selectedActivities', JSON.stringify(formData.selectedActivities));
       
       // Add files
       if (formData.incorporationCertificate) {
@@ -257,6 +331,25 @@ export default function NewRegistrationPage() {
                   <option key={type} value={type}>{type}</option>
                 ))}
               </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Permit Category *</label>
+              <select
+                name="permitCategory"
+                value={formData.permitCategory}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value="">Select Permit Category</option>
+                {permitCategories.map(category => (
+                  <option key={category.value} value={category.value}>{category.label}</option>
+                ))}
+              </select>
+              <p className="mt-1 text-sm text-gray-500">
+                {formData.permitCategory === 'SPECIALIZED' && 'Requires highly specialized/technical skills'}
+                {formData.permitCategory === 'GENERAL' && 'Services that do not require highly technical or specialized expertise'}
+              </p>
             </div>
           </div>
         );
@@ -462,6 +555,35 @@ export default function NewRegistrationPage() {
                 ))}
               </div>
             </div>
+            
+            {formData.permitCategory && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Service Activities * 
+                  <span className="text-sm font-normal text-gray-500">
+                    ({formData.permitCategory === 'SPECIALIZED' ? 'Specialized' : 'General'} Category)
+                  </span>
+                </label>
+                <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md p-3">
+                  <div className="grid grid-cols-1 gap-2">
+                    {getAvailableActivities().map(activity => (
+                      <label key={activity} className="flex items-start">
+                        <input
+                          type="checkbox"
+                          checked={formData.selectedActivities.includes(activity)}
+                          onChange={() => handleCheckboxChange('selectedActivities', activity)}
+                          className="mt-1 rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        />
+                        <span className="ml-2 text-sm text-gray-700">{activity}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  Select all service activities that your company will provide.
+                </p>
+              </div>
+            )}
           </div>
         );
       

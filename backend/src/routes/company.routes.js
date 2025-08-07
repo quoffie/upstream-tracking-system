@@ -539,10 +539,21 @@ router.post('/register/initiate', authenticate, async (req, res) => {
     }
 
     // Minimal data to initiate, more will be added in the update step
-    const { companyName, companyEmail, contactPersonName, contactPersonMobile, permitCategory } = req.body;
+    const { companyName, companyEmail, contactPersonName, contactPersonMobile, permitCategory, selectedActivities } = req.body;
 
     if (!companyName || !companyEmail || !contactPersonName || !contactPersonMobile || !permitCategory) {
         return res.status(400).json({ error: 'Missing required fields for initiation: companyName, companyEmail, contactPersonName, contactPersonMobile, permitCategory' });
+    }
+
+    // Parse selectedActivities if it's a JSON string
+    let preferredActivities = [];
+    if (selectedActivities) {
+      try {
+        preferredActivities = typeof selectedActivities === 'string' ? JSON.parse(selectedActivities) : selectedActivities;
+      } catch (error) {
+        console.error('Error parsing selectedActivities:', error);
+        return res.status(400).json({ error: 'Invalid selectedActivities format' });
+      }
     }
 
     const registration = await req.prisma.companyRegistration.create({
@@ -553,6 +564,7 @@ router.post('/register/initiate', authenticate, async (req, res) => {
         contactPersonName,
         contactPersonMobile,
         permitCategory,
+        preferredActivities, // Store selected activities
         // Default status, can be PENDING_FORM_COMPLETION if email is considered verified from user auth
         status: CompanyRegistrationStatus.PENDING_FORM_COMPLETION, 
         // Placeholder for required fields that will be filled in subsequent steps
@@ -629,6 +641,19 @@ router.put('/register/:registrationId', authenticate, async (req, res) => {
     // Convert date strings to Date objects if present
     if (dataToUpdate.incorporationDate) dataToUpdate.incorporationDate = new Date(dataToUpdate.incorporationDate);
     if (dataToUpdate.declarationDate) dataToUpdate.declarationDate = new Date(dataToUpdate.declarationDate);
+
+    // Handle selectedActivities field from frontend
+    if (dataToUpdate.selectedActivities) {
+      try {
+        dataToUpdate.preferredActivities = typeof dataToUpdate.selectedActivities === 'string' 
+          ? JSON.parse(dataToUpdate.selectedActivities) 
+          : dataToUpdate.selectedActivities;
+        delete dataToUpdate.selectedActivities; // Remove the frontend field name
+      } catch (error) {
+        console.error('Error parsing selectedActivities:', error);
+        return res.status(400).json({ error: 'Invalid selectedActivities format' });
+      }
+    }
 
     // Exclude status from direct user update here, status changes via specific actions (submit, admin review)
     delete dataToUpdate.status; 
