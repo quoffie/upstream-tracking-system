@@ -63,7 +63,7 @@ export default function CommissionAdminDashboard() {
     if (!token || !userData) {
       // Redirect to login if not authenticated
       console.log('No token or user data, redirecting to login');
-      router.push('/login?redirect=/dashboard/admin');
+      router.push('/auth/login?redirect=/dashboard/admin');
       return;
     }
     
@@ -105,7 +105,7 @@ export default function CommissionAdminDashboard() {
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error parsing user data:', error);
-      router.push('/login?redirect=/dashboard/admin');
+      router.push('/auth/login?redirect=/dashboard/admin');
     }
   }, [router]);
 

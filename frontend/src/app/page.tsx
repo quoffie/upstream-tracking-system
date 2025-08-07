@@ -39,7 +39,7 @@ export default function Home() {
           {/* Login/Register Button */}
           <div className="hidden md:block">
             <Link 
-              href="/login" 
+              href="/auth/login" 
               className="bg-gold-600 hover:bg-gold-700 text-white px-4 py-2 rounded-md transition duration-300"
             >
               Login/Register
@@ -72,7 +72,7 @@ export default function Home() {
               <Link href="/regulatory-docs" className="hover:text-gold-500 py-2 transition duration-300">Regulatory Docs</Link>
               <Link href="/faq" className="hover:text-gold-500 py-2 transition duration-300">FAQ/Support</Link>
               <Link 
-                href="/login" 
+                href="/auth/login" 
                 className="bg-gold-600 hover:bg-gold-700 text-white px-4 py-2 rounded-md transition duration-300 inline-block mt-2"
               >
                 Login/Register
@@ -105,13 +105,13 @@ export default function Home() {
             <p className="text-xl mb-6 opacity-90 drop-shadow-md">Digitizing and enforcing regulatory, compliance, and permit management workflows for Ghana's upstream petroleum sector.</p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
               <Link 
-                href="/register" 
+                href="/auth/register" 
                 className="bg-gold-600 hover:bg-gold-700 text-white px-6 py-3 rounded-md text-center transition duration-300 shadow-lg transform hover:-translate-y-1 backdrop-blur-sm"
               >
                 Register Company
               </Link>
               <Link 
-                href="/register" 
+                href="/auth/login?message=registration-required" 
                 className="bg-white/90 hover:bg-white text-blue-800 px-6 py-3 rounded-md text-center transition duration-300 shadow-lg transform hover:-translate-y-1 backdrop-blur-sm"
               >
                 Apply for Permit
@@ -231,7 +231,7 @@ export default function Home() {
           <p className="text-xl mb-8 max-w-3xl mx-auto">Join hundreds of companies already using our platform to streamline their regulatory compliance and permit management.</p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Link 
-              href="/register" 
+              href="/auth/register" 
               className="bg-gold-600 hover:bg-gold-700 text-white px-8 py-3 rounded-md text-center transition duration-300 shadow-lg"
             >
               Register Now

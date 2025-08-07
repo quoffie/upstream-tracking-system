@@ -34,7 +34,7 @@ export default function PermitApplication() {
     
     if (!token || !userData) {
       // Redirect to login if not authenticated
-      router.push('/login?redirect=/apply/permit');
+      router.push('/auth/login?redirect=/apply/permit');
       return;
     }
     
@@ -56,7 +56,7 @@ export default function PermitApplication() {
       }
     } catch (error) {
       console.error('Error parsing user data:', error);
-      router.push('/login?redirect=/apply/permit');
+      router.push('/auth/login?redirect=/apply/permit');
     }
   }, [router]);
 
@@ -137,7 +137,7 @@ export default function PermitApplication() {
               onClick={() => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                router.push('/login');
+                router.push('/auth/login');
               }}
               className="bg-gold-600 hover:bg-gold-700 text-white px-4 py-2 rounded-md transition duration-300"
             >

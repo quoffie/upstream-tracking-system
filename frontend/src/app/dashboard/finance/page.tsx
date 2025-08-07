@@ -57,7 +57,7 @@ export default function FinanceDashboard() {
     
     if (!token || !userData) {
       // Redirect to login if not authenticated
-      router.push('/login?redirect=/dashboard/finance');
+      router.push('/auth/login?redirect=/dashboard/finance');
       return;
     }
     
@@ -95,7 +95,7 @@ export default function FinanceDashboard() {
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error parsing user data:', error);
-      router.push('/login?redirect=/dashboard/finance');
+      router.push('/auth/login?redirect=/dashboard/finance');
     }
   }, [router]);
 

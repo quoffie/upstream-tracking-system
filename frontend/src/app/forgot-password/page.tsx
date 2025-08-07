@@ -55,7 +55,7 @@ export default function ForgotPassword() {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Remember your password?{' '}
-          <Link href="/login" className="font-medium text-gold-600 hover:text-gold-500">
+          <Link href="/auth/login" className="font-medium text-gold-600 hover:text-gold-500">
             Sign in
           </Link>
         </p>
@@ -116,7 +116,7 @@ export default function ForgotPassword() {
                 </p>
               </div>
               <div className="mt-6">
-                <Link href="/login" className="text-sm font-medium text-gold-600 hover:text-gold-500">
+                <Link href="/auth/login" className="text-sm font-medium text-gold-600 hover:text-gold-500">
                   Return to login
                 </Link>
               </div>

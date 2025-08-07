@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
@@ -18,6 +18,17 @@ import {
   ProfileIcon,
   SupportIcon
 } from '../../components/icons/DashboardIcons';
+import {
+  PlusIcon,
+  DocumentTextIcon,
+  UserGroupIcon,
+  CurrencyDollarIcon,
+  ChartBarIcon,
+  ClipboardDocumentListIcon,
+  ArrowDownTrayIcon,
+  BellIcon,
+  ExclamationTriangleIcon
+} from '@heroicons/react/24/outline';
 
 // Mock data for charts
 const applicationStatusData = [
@@ -48,10 +59,16 @@ const STAFF_COLORS = ['#004A7B', '#B8860B'];
 export default function CompanyAdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const pathname = usePathname();
+  const router = useRouter();
   const sidebarItems = getCompanyAdminMenuItems(pathname);
   
   console.log('Company Admin sidebarItems:', sidebarItems);
   console.log('Company Admin pathname:', pathname);
+
+  // Quick action handlers
+  const handleQuickAction = (path: string) => {
+    router.push(path);
+  };
 
   return (
     <DashboardLayout
@@ -62,6 +79,60 @@ export default function CompanyAdminDashboard() {
       sidebarItems={sidebarItems}
     >
       <div className="space-y-6">
+        {/* Quick Actions Section */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <button
+              onClick={() => handleQuickAction('/dashboard/company-admin/applications/new')}
+              className="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors duration-200 group"
+            >
+              <PlusIcon className="h-8 w-8 text-blue-600 group-hover:text-blue-700 mb-2" />
+              <span className="text-sm font-medium text-gray-900">New Application</span>
+            </button>
+            
+            <button
+              onClick={() => handleQuickAction('/dashboard/company-admin/permits/apply-regular')}
+              className="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors duration-200 group"
+            >
+              <DocumentTextIcon className="h-8 w-8 text-green-600 group-hover:text-green-700 mb-2" />
+              <span className="text-sm font-medium text-gray-900">Apply Permit</span>
+            </button>
+            
+            <button
+              onClick={() => handleQuickAction('/dashboard/company-admin/personnel/add')}
+              className="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors duration-200 group"
+            >
+              <UserGroupIcon className="h-8 w-8 text-purple-600 group-hover:text-purple-700 mb-2" />
+              <span className="text-sm font-medium text-gray-900">Add Personnel</span>
+            </button>
+            
+            <button
+              onClick={() => handleQuickAction('/dashboard/company-admin/payments/make')}
+              className="flex flex-col items-center p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors duration-200 group"
+            >
+              <CurrencyDollarIcon className="h-8 w-8 text-yellow-600 group-hover:text-yellow-700 mb-2" />
+              <span className="text-sm font-medium text-gray-900">Make Payment</span>
+            </button>
+            
+            <button
+              onClick={() => handleQuickAction('/dashboard/company-admin/documents/upload')}
+              className="flex flex-col items-center p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors duration-200 group"
+            >
+              <ArrowDownTrayIcon className="h-8 w-8 text-indigo-600 group-hover:text-indigo-700 mb-2" />
+              <span className="text-sm font-medium text-gray-900">Upload Docs</span>
+            </button>
+            
+            <button
+              onClick={() => handleQuickAction('/dashboard/company-admin/analytics/performance')}
+              className="flex flex-col items-center p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors duration-200 group"
+            >
+              <ChartBarIcon className="h-8 w-8 text-red-600 group-hover:text-red-700 mb-2" />
+              <span className="text-sm font-medium text-gray-900">View Reports</span>
+            </button>
+          </div>
+        </div>
+
         {/* Overview Section */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Status Cards */}
@@ -168,7 +239,10 @@ export default function CompanyAdminDashboard() {
                 <p className="text-xs text-gray-500 mt-1">Due: Dec 31, 2023</p>
               </li>
             </ul>
-            <button className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200">
+            <button 
+              onClick={() => handleQuickAction('/dashboard/company-admin/payments/invoices')}
+              className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
+            >
               View All Payments
             </button>
           </div>
@@ -245,7 +319,10 @@ export default function CompanyAdminDashboard() {
                 </div>
               </li>
             </ul>
-            <button className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200">
+            <button 
+              onClick={() => handleQuickAction('/dashboard/company-admin/analytics/compliance')}
+              className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
+            >
               View All Tasks
             </button>
           </div>
@@ -292,8 +369,18 @@ export default function CompanyAdminDashboard() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                    <button className="text-blue-600 hover:text-blue-900">Track</button>
+                    <button 
+                      onClick={() => handleQuickAction('/dashboard/company-admin/applications/view/APP-2023-0142')}
+                      className="text-blue-600 hover:text-blue-900 mr-3"
+                    >
+                      View
+                    </button>
+                    <button 
+                      onClick={() => handleQuickAction('/dashboard/company-admin/applications/track/APP-2023-0142')}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
+                      Track
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -307,9 +394,24 @@ export default function CompanyAdminDashboard() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">Download</button>
-                    <button className="text-blue-600 hover:text-blue-900">Print</button>
+                    <button 
+                      onClick={() => handleQuickAction('/dashboard/company-admin/applications/view/APP-2023-0141')}
+                      className="text-blue-600 hover:text-blue-900 mr-3"
+                    >
+                      View
+                    </button>
+                    <button 
+                      onClick={() => window.open('/api/applications/APP-2023-0141/download', '_blank')}
+                      className="text-blue-600 hover:text-blue-900 mr-3"
+                    >
+                      Download
+                    </button>
+                    <button 
+                      onClick={() => window.print()}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
+                      Print
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -323,15 +425,28 @@ export default function CompanyAdminDashboard() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                    <button className="text-blue-600 hover:text-blue-900">Edit</button>
+                    <button 
+                      onClick={() => handleQuickAction('/dashboard/company-admin/applications/view/APP-2023-0140')}
+                      className="text-blue-600 hover:text-blue-900 mr-3"
+                    >
+                      View
+                    </button>
+                    <button 
+                      onClick={() => handleQuickAction('/dashboard/company-admin/applications/edit/APP-2023-0140')}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
+                      Edit
+                    </button>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div className="px-6 py-4 border-t border-gray-200">
-            <button className="text-blue-600 hover:text-blue-900 text-sm font-medium">
+            <button 
+              onClick={() => handleQuickAction('/dashboard/company-admin/applications/all')}
+              className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+            >
               View All Applications →
             </button>
           </div>

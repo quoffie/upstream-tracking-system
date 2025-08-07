@@ -156,7 +156,7 @@ const WorkflowAuditPage = () => {
         entityType: 'system',
         entityId: 'DB-BACKUP-001',
         description: 'Automated daily database backup completed successfully',
-        ipAddress: '127.0.0.1',
+        ipAddress: '192.168.1.100',
         userAgent: 'System/1.0',
         severity: 'low',
         status: 'success'

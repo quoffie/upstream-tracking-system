@@ -6,7 +6,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3020:3000"
+      - "3030:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -21,8 +21,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5020:5000"
-      - "5555:5555"
+      - "5030:5000"
+      - "5565:5555"
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -38,7 +38,7 @@ services:
   postgres:
     image: postgres:14
     ports:
-      - "5450:5432"
+      - "5460:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -49,8 +49,8 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "1040:1025" # SMTP server
-      - "8040:8025" # Web UI
+      - "1050:1025" # SMTP server
+      - "8050:8025" # Web UI
 
 volumes:
   postgres_data:

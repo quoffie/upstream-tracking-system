@@ -357,7 +357,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-blue-800 mt-8 pt-8 text-center">
-            <p>&copy; {currentYear} Petroleum Commission, Ghana. All rights reserved.</p>
+            <p suppressHydrationWarning>&copy; {currentYear} Petroleum Commission, Ghana. All rights reserved.</p>
           </div>
         </div>
       </footer>

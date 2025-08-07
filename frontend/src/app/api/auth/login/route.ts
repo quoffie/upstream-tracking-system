@@ -6,8 +6,9 @@ export async function POST(request: NextRequest) {
     
     console.log('API route called with body:', body);
     
-    // Use 127.0.0.1 instead of localhost for better compatibility
-    const backendUrl = 'http://127.0.0.1:5000/api/auth/login';
+    // Use environment variable for backend URL
+     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+     const backendUrl = `${apiBaseUrl}/auth/login`;
     console.log('Attempting to connect to:', backendUrl);
     
     // Forward the request to the backend server

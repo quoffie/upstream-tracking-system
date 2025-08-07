@@ -165,16 +165,76 @@ export default function CompanyRegistrationPage() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // TODO: Implement API call to submit company registration
-      console.log('Submitting company registration:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Redirect to success page or dashboard
-      router.push('/dashboard/company-admin/applications?registration=success');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please log in to submit registration');
+        return;
+      }
+
+      const response = await fetch('/api/company/register/initiate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          companyName: formData.companyName,
+          registrationNumber: formData.registrationNumber,
+          dateOfIncorporation: formData.dateOfIncorporation,
+          telephoneNumber: formData.telephoneNumber,
+          faxNumber: formData.faxNumber,
+          emailAddress: formData.emailAddress,
+          website: formData.website,
+          registeredAddress: formData.registeredAddress,
+          postalAddress: formData.postalAddress,
+          contactPersonName: formData.contactPersonName,
+          contactPersonPosition: formData.contactPersonPosition,
+          contactPersonPhone: formData.contactPersonPhone,
+          contactPersonEmail: formData.contactPersonEmail,
+          typeOfCompany: formData.typeOfCompany,
+          authorizedCapital: parseFloat(formData.authorizedCapital) || 0,
+          paidUpCapital: parseFloat(formData.paidUpCapital) || 0,
+          shareholderStructure: formData.shareholderStructure,
+          shareholderName1: formData.shareholderName1,
+          shareholderNationality1: formData.shareholderNationality1,
+          shareholderShares1: parseFloat(formData.shareholderShares1) || 0,
+          shareholderName2: formData.shareholderName2,
+          shareholderNationality2: formData.shareholderNationality2,
+          shareholderShares2: parseFloat(formData.shareholderShares2) || 0,
+          directorName1: formData.directorName1,
+          directorNationality1: formData.directorNationality1,
+          directorPosition1: formData.directorPosition1,
+          directorName2: formData.directorName2,
+          directorNationality2: formData.directorNationality2,
+          directorPosition2: formData.directorPosition2,
+          permitCategory: formData.permitCategory,
+          specificActivities: formData.specificActivities,
+          financialCapability: formData.financialCapability,
+          technicalCompetency: formData.technicalCompetency,
+          staffingPlan: formData.staffingPlan,
+          experienceRecord: formData.experienceRecord,
+          threeYearPlan: formData.threeYearPlan,
+          localContentPlan: formData.localContentPlan,
+          proposedInvestments: formData.proposedInvestments,
+          servicesOffered: formData.servicesOffered,
+          materialsEquipment: formData.materialsEquipment,
+          hssePolicy: formData.hssePolicy,
+          declarationCompliance: formData.declarationCompliance,
+          declarationAccuracy: formData.declarationAccuracy,
+          declarationUndertaking: formData.declarationUndertaking
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        router.push('/dashboard/company-admin/applications?registration=success');
+      } else {
+        const error = await response.json();
+        alert('Registration failed: ' + (error.message || 'Unknown error'));
+      }
     } catch (error) {
       console.error('Error submitting registration:', error);
+      alert('Registration failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

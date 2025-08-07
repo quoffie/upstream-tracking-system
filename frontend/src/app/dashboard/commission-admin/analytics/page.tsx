@@ -60,7 +60,7 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'commission_admin')) {
-      router.push('/login');
+      router.push('/auth/login');
       return;
     }
   }, [user, loading, router]);

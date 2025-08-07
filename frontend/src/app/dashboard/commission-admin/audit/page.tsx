@@ -53,7 +53,7 @@ export default function AuditLogsPage() {
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'commission_admin')) {
-      router.push('/login');
+      router.push('/auth/login');
       return;
     }
   }, [user, loading, router]);
@@ -165,7 +165,7 @@ export default function AuditLogsPage() {
         category: 'System Changes',
         resource: 'Database Backup System',
         details: 'Automated daily database backup completed successfully',
-        ipAddress: '127.0.0.1',
+        ipAddress: '192.168.1.100',
         userAgent: 'System/1.0',
         severity: 'Low',
         status: 'Success',

@@ -1,9 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface DemoUser {
   email: string;
@@ -15,11 +20,22 @@ interface DemoUser {
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showDemoUsers, setShowDemoUsers] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login, isAuthenticated } = useAuth();
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
+  
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(redirectPath);
+    }
+  }, [isAuthenticated, router, redirectPath]);
   
   // Demo users for testing
   const demoUsers: DemoUser[] = [
@@ -61,13 +77,12 @@ export default function Login() {
         throw new Error(data.error || 'Login failed');
       }
       
-      // Store token and user info in localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Use the login function from useAuth hook
+      login(data.user, data.token);
       
-      // Redirect based on user role
-      const dashboardPath = getDashboardPathByRole(data.user.role);
-      router.push(dashboardPath);
+      // Redirect to the intended page or dashboard based on user role
+      const targetPath = redirectPath !== '/dashboard' ? redirectPath : getDashboardPathByRole(data.user.role);
+      router.push(targetPath);
     } catch (err: any) {
       setError(err.message || 'Invalid credentials. Please try again.');
     } finally {
@@ -124,7 +139,7 @@ export default function Login() {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Or{' '}
-          <Link href="/register" className="font-medium text-gold-600 hover:text-gold-500">
+          <Link href="/auth/register" className="font-medium text-gold-600 hover:text-gold-500">
             register for a new account
           </Link>
         </p>

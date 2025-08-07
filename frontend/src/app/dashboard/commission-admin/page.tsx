@@ -22,7 +22,7 @@ export default function CommissionAdminDashboard() {
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (!userData) {
-      router.push('/login?redirect=/dashboard/commission-admin');
+      router.push('/auth/login?redirect=/dashboard/commission-admin');
       return;
     }
 
@@ -59,7 +59,7 @@ export default function CommissionAdminDashboard() {
       setUser(parsedUser);
     } catch (error) {
       console.error('Error parsing user data:', error);
-      router.push('/login?redirect=/dashboard/commission-admin');
+      router.push('/auth/login?redirect=/dashboard/commission-admin');
       return;
     } finally {
       setIsLoading(false);

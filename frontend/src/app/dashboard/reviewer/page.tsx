@@ -50,7 +50,7 @@ export default function ReviewerDashboard() {
     
     if (!token || !userData) {
       // Redirect to login if not authenticated
-      router.push('/login?redirect=/dashboard/reviewer');
+      router.push('/auth/login?redirect=/dashboard/reviewer');
       return;
     }
     
@@ -88,7 +88,7 @@ export default function ReviewerDashboard() {
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error parsing user data:', error);
-      router.push('/login?redirect=/dashboard/reviewer');
+      router.push('/auth/login?redirect=/dashboard/reviewer');
     }
   }, [router]);
 

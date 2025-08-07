@@ -165,7 +165,7 @@ export default function RegulatoryDocs() {
           {/* Login/Register Button */}
           <div className="hidden md:block">
             <Link 
-              href="/login" 
+              href="/auth/login" 
               className="bg-gold-600 hover:bg-gold-700 text-white px-4 py-2 rounded-md transition duration-300"
             >
               Login/Register
@@ -325,7 +325,7 @@ export default function RegulatoryDocs() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-blue-800 mb-8 text-center">Quick Access</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link href="/apply/permit" className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 text-center border-t-4 border-blue-600">
+            <Link href="/auth/login?message=registration-required" className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 text-center border-t-4 border-blue-600">
               <div className="text-blue-600 mb-4">
                 <svg className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -335,7 +335,7 @@ export default function RegulatoryDocs() {
               <p className="text-gray-600 text-sm">Submit permit applications online</p>
             </Link>
             
-            <Link href="/register" className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 text-center border-t-4 border-green-600">
+            <Link href="/auth/register" className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300 text-center border-t-4 border-green-600">
               <div className="text-green-600 mb-4">
                 <svg className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -399,7 +399,7 @@ export default function RegulatoryDocs() {
             </div>
             <div>
               <h3 className="text-xl font-semibold mb-4">Connect With Us</h3>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 mb-6">
                 <a href="#" className="hover:text-gold-500 transition duration-300" aria-label="Facebook">
                   <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
@@ -415,6 +415,23 @@ export default function RegulatoryDocs() {
                     <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
                   </svg>
                 </a>
+              </div>
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold mb-3">Newsletter</h4>
+                <p className="text-gray-300 mb-4 text-sm">Stay updated with the latest regulatory news and updates.</p>
+                <form className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="flex-1 px-4 py-2 rounded-lg text-blue-800 focus:outline-none focus:ring-2 focus:ring-gold-500"
+                  />
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-gold-600 text-white rounded-lg hover:bg-gold-700 transition duration-300 font-semibold"
+                  >
+                    Subscribe
+                  </button>
+                </form>
               </div>
             </div>
           </div>

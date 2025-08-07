@@ -140,7 +140,7 @@ export default function AuditLogsPage() {
       resource: 'Database',
       resourceId: 'db-backup-20230529',
       details: 'Automated daily database backup completed successfully',
-      ipAddress: 'localhost',
+      ipAddress: '192.168.1.100',
       userAgent: 'System Process',
       severity: 'Low',
       category: 'System Operations'
