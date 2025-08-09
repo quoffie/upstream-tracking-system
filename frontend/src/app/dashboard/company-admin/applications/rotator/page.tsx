@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import DashboardLayout from '../../../../components/layouts/DashboardLayout';
+import DashboardLayout from '../../../../../app/components/layouts/DashboardLayout';
 import { FileTextIcon, DocumentIcon, ProfileIcon, PaymentIcon, ApplicationIcon, HomeIcon, RefreshCwIcon, PermitIcon, PersonnelIcon, ChevronLeftIcon, ChevronRightIcon, CheckCircleIcon } from '../../../../components/icons/DashboardIcons';
 import { useSubmit } from '../../../../hooks/useApi';
 import { apiService } from '../../../../services/api.service';

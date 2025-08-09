@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import { getCommissionAdminMenuItems } from '../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../app/components/layouts/DashboardLayout';
+import { getCommissionAdminMenuItems } from '../../../app/components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ReviewIcon,

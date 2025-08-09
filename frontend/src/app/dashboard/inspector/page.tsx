@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import { getInspectorMenuItems } from '../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../app/components/layouts/DashboardLayout';
+import { getInspectorMenuItems } from '../../../app/components/layouts/DashboardMenus';
 
 // Mock data for charts
 const inspectionStatusData = [

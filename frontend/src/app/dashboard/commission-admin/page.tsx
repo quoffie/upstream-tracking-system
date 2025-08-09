@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import EnhancedDashboardLayout from '../../components/layouts/EnhancedDashboardLayout';
-import { getCommissionAdminMenuItems } from '../../components/layouts/DashboardMenus';
+import { getCommissionAdminMenuItems } from '../../../app/components/layouts/DashboardMenus';
 
 interface User {
   id: string;

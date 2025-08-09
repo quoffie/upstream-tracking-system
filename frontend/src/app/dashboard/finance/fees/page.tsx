@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import DashboardLayout from '../../../components/layouts/DashboardLayout';
+import DashboardLayout from '../../../../app/components/layouts/DashboardLayout';
 import {
   HomeIcon,
   PaymentIcon,

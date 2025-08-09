@@ -1,628 +1,699 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/hooks/useAuth';
+import {
+  ChartBarIcon,
+  PresentationChartLineIcon,
+  DocumentChartBarIcon,
+  CurrencyDollarIcon,
+  BuildingOfficeIcon,
+  UserGroupIcon,
+  ClockIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
+  ArrowDownTrayIcon,
+  CalendarIcon,
+  FunnelIcon,
+  MagnifyingGlassIcon,
+  EyeIcon,
+  Cog6ToothIcon,
+  ShareIcon,
+  PrinterIcon,
+  ChartPieIcon,
+  TableCellsIcon,
+  MapIcon,
+  GlobeAltIcon
+} from '@heroicons/react/24/outline';
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
 
 interface AnalyticsData {
-  applications: {
-    total: number;
-    approved: number;
-    pending: number;
-    rejected: number;
-    monthlyTrend: { month: string; count: number }[];
-    byType: { type: string; count: number; percentage: number }[];
-    avgProcessingTime: number;
-  };
-  revenue: {
-    total: number;
-    monthly: number;
-    quarterly: number;
-    yearly: number;
-    trend: { month: string; amount: number }[];
-    bySource: { source: string; amount: number; percentage: number }[];
-  };
-  performance: {
-    slaCompliance: number;
-    avgResponseTime: number;
-    customerSatisfaction: number;
-    systemUptime: number;
-    processingEfficiency: number;
-  };
-  compliance: {
-    overallScore: number;
-    auditFindings: number;
-    resolvedIssues: number;
-    pendingActions: number;
-    riskLevel: 'Low' | 'Medium' | 'High';
-  };
+  period: string;
+  applications: number;
+  approvals: number;
+  revenue: number;
+  companies: number;
+  compliance: number;
+  inspections: number;
 }
 
-interface Report {
-  id: string;
+interface CompanyPerformance {
   name: string;
-  type: 'Financial' | 'Operational' | 'Compliance' | 'Performance';
-  description: string;
-  lastGenerated: string;
-  frequency: 'Daily' | 'Weekly' | 'Monthly' | 'Quarterly' | 'Annual';
-  status: 'Ready' | 'Generating' | 'Scheduled';
-  size?: string;
+  applications: number;
+  approvals: number;
+  revenue: number;
+  compliance: number;
+  localContent: number;
+}
+
+interface RegionalData {
+  region: string;
+  companies: number;
+  revenue: number;
+  applications: number;
+  compliance: number;
 }
 
 export default function AnalyticsPage() {
-  const { user, loading } = useAuth();
   const router = useRouter();
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
-  const [reports, setReports] = useState<Report[]>([]);
-  const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'insights'>('overview');
-  const [dateRange, setDateRange] = useState('30');
-  const [selectedMetric, setSelectedMetric] = useState('applications');
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedPeriod, setSelectedPeriod] = useState('12months');
+  const [selectedMetric, setSelectedMetric] = useState('all');
+  const [viewType, setViewType] = useState('overview');
+
+  const analyticsData: AnalyticsData[] = [
+    { period: 'Jan 2024', applications: 45, approvals: 38, revenue: 2400000, companies: 12, compliance: 85, inspections: 28 },
+    { period: 'Feb 2024', applications: 52, approvals: 44, revenue: 2800000, companies: 15, compliance: 88, inspections: 32 },
+    { period: 'Mar 2024', applications: 48, approvals: 41, revenue: 2600000, companies: 13, compliance: 82, inspections: 30 },
+    { period: 'Apr 2024', applications: 58, approvals: 49, revenue: 3200000, companies: 18, compliance: 90, inspections: 35 },
+    { period: 'May 2024', applications: 61, approvals: 52, revenue: 3400000, companies: 20, compliance: 87, inspections: 38 },
+    { period: 'Jun 2024', applications: 55, approvals: 47, revenue: 3100000, companies: 16, compliance: 89, inspections: 33 },
+    { period: 'Jul 2024', applications: 63, approvals: 54, revenue: 3600000, companies: 22, compliance: 91, inspections: 40 },
+    { period: 'Aug 2024', applications: 59, approvals: 50, revenue: 3300000, companies: 19, compliance: 86, inspections: 36 },
+    { period: 'Sep 2024', applications: 67, approvals: 57, revenue: 3800000, companies: 24, compliance: 93, inspections: 42 },
+    { period: 'Oct 2024', applications: 64, approvals: 55, revenue: 3500000, companies: 21, compliance: 88, inspections: 39 },
+    { period: 'Nov 2024', applications: 70, approvals: 60, revenue: 4000000, companies: 26, compliance: 95, inspections: 45 },
+    { period: 'Dec 2024', applications: 68, approvals: 58, revenue: 3900000, companies: 25, compliance: 92, inspections: 43 }
+  ];
+
+  const companyPerformance: CompanyPerformance[] = [
+    { name: 'Shell Petroleum', applications: 24, approvals: 22, revenue: 8500000, compliance: 95, localContent: 78 },
+    { name: 'Chevron Nigeria', applications: 20, approvals: 18, revenue: 7200000, compliance: 92, localContent: 82 },
+    { name: 'ExxonMobil', applications: 18, approvals: 16, revenue: 6800000, compliance: 88, localContent: 75 },
+    { name: 'Total Energies', applications: 16, approvals: 15, revenue: 5900000, compliance: 90, localContent: 80 },
+    { name: 'Eni Nigeria', applications: 14, approvals: 12, revenue: 5200000, compliance: 85, localContent: 73 },
+    { name: 'Addax Petroleum', applications: 12, approvals: 11, revenue: 4600000, compliance: 87, localContent: 76 },
+    { name: 'NPDC', applications: 15, approvals: 13, revenue: 4100000, compliance: 83, localContent: 85 },
+    { name: 'Seplat Energy', applications: 11, approvals: 10, revenue: 3800000, compliance: 89, localContent: 79 }
+  ];
+
+  const regionalData: RegionalData[] = [
+    { region: 'Niger Delta', companies: 45, revenue: 18500000, applications: 180, compliance: 88 },
+    { region: 'Lagos/Southwest', companies: 32, revenue: 12300000, applications: 125, compliance: 92 },
+    { region: 'Abuja/North Central', companies: 28, revenue: 8900000, applications: 95, compliance: 85 },
+    { region: 'Port Harcourt/South South', companies: 38, revenue: 15200000, applications: 155, compliance: 90 },
+    { region: 'Kano/Northwest', companies: 15, revenue: 4200000, applications: 48, compliance: 82 },
+    { region: 'Enugu/Southeast', companies: 22, revenue: 6800000, applications: 72, compliance: 87 }
+  ];
+
+  const pieChartData = [
+    { name: 'Approved', value: 65, color: '#10B981' },
+    { name: 'Pending', value: 20, color: '#F59E0B' },
+    { name: 'Under Review', value: 10, color: '#3B82F6' },
+    { name: 'Rejected', value: 5, color: '#EF4444' }
+  ];
+
+  const complianceData = [
+    { category: 'Environmental', score: 88, target: 90 },
+    { category: 'Safety', score: 92, target: 95 },
+    { category: 'Local Content', score: 76, target: 80 },
+    { category: 'Financial', score: 94, target: 90 },
+    { category: 'Operational', score: 85, target: 85 },
+    { category: 'Regulatory', score: 90, target: 92 }
+  ];
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== 'commission_admin')) {
-      router.push('/auth/login');
-      return;
-    }
-  }, [user, loading, router]);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
 
-  useEffect(() => {
-    // Mock analytics data
-    const mockAnalyticsData: AnalyticsData = {
-      applications: {
-        total: 1247,
-        approved: 892,
-        pending: 234,
-        rejected: 121,
-        monthlyTrend: [
-          { month: 'Jan', count: 98 },
-          { month: 'Feb', count: 112 },
-          { month: 'Mar', count: 134 },
-          { month: 'Apr', count: 156 },
-          { month: 'May', count: 143 },
-          { month: 'Jun', count: 167 }
-        ],
-        byType: [
-          { type: 'Company Registration', count: 456, percentage: 36.6 },
-          { type: 'Regular Permits', count: 389, percentage: 31.2 },
-          { type: 'JV Applications', count: 234, percentage: 18.8 },
-          { type: 'Renewals', count: 168, percentage: 13.4 }
-        ],
-        avgProcessingTime: 12.5
-      },
-      revenue: {
-        total: 2847500000,
-        monthly: 456780000,
-        quarterly: 1234560000,
-        yearly: 2847500000,
-        trend: [
-          { month: 'Jan', amount: 234500000 },
-          { month: 'Feb', amount: 267800000 },
-          { month: 'Mar', amount: 298400000 },
-          { month: 'Apr', amount: 345600000 },
-          { month: 'May', amount: 389200000 },
-          { month: 'Jun', amount: 456780000 }
-        ],
-        bySource: [
-          { source: 'Registration Fees', amount: 1245600000, percentage: 43.7 },
-          { source: 'Permit Fees', amount: 892300000, percentage: 31.3 },
-          { source: 'JV Fees', amount: 456700000, percentage: 16.0 },
-          { source: 'Renewal Fees', amount: 252900000, percentage: 8.9 }
-        ]
-      },
-      performance: {
-        slaCompliance: 94.2,
-        avgResponseTime: 2.3,
-        customerSatisfaction: 4.6,
-        systemUptime: 99.8,
-        processingEfficiency: 87.5
-      },
-      compliance: {
-        overallScore: 92.5,
-        auditFindings: 3,
-        resolvedIssues: 47,
-        pendingActions: 8,
-        riskLevel: 'Low'
-      }
-    };
-
-    const mockReports: Report[] = [
-      {
-        id: 'RPT-001',
-        name: 'Monthly Financial Summary',
-        type: 'Financial',
-        description: 'Comprehensive monthly revenue and payment analysis',
-        lastGenerated: '2024-01-25T09:00:00Z',
-        frequency: 'Monthly',
-        status: 'Ready',
-        size: '2.4 MB'
-      },
-      {
-        id: 'RPT-002',
-        name: 'Application Processing Report',
-        type: 'Operational',
-        description: 'Detailed analysis of application processing metrics',
-        lastGenerated: '2024-01-25T08:30:00Z',
-        frequency: 'Weekly',
-        status: 'Ready',
-        size: '1.8 MB'
-      },
-      {
-        id: 'RPT-003',
-        name: 'Compliance Audit Report',
-        type: 'Compliance',
-        description: 'Regulatory compliance status and audit findings',
-        lastGenerated: '2024-01-20T14:00:00Z',
-        frequency: 'Quarterly',
-        status: 'Ready',
-        size: '3.2 MB'
-      },
-      {
-        id: 'RPT-004',
-        name: 'Performance Dashboard',
-        type: 'Performance',
-        description: 'System performance and efficiency metrics',
-        lastGenerated: '2024-01-25T07:00:00Z',
-        frequency: 'Daily',
-        status: 'Ready',
-        size: '956 KB'
-      },
-      {
-        id: 'RPT-005',
-        name: 'Annual Revenue Analysis',
-        type: 'Financial',
-        description: 'Comprehensive annual revenue and growth analysis',
-        lastGenerated: '2024-01-01T10:00:00Z',
-        frequency: 'Annual',
-        status: 'Scheduled',
-        size: '5.1 MB'
-      },
-      {
-        id: 'RPT-006',
-        name: 'Customer Satisfaction Survey',
-        type: 'Performance',
-        description: 'Customer feedback and satisfaction metrics',
-        lastGenerated: '2024-01-24T16:00:00Z',
-        frequency: 'Monthly',
-        status: 'Generating'
-      }
-    ];
-
-    setAnalyticsData(mockAnalyticsData);
-    setReports(mockReports);
+    return () => clearTimeout(timer);
   }, []);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-GH', {
+    return new Intl.NumberFormat('en-NG', {
       style: 'currency',
-      currency: 'GHS',
-      minimumFractionDigits: 0
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-NG', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Ready': return 'bg-green-100 text-green-800';
-      case 'Generating': return 'bg-blue-100 text-blue-800';
-      case 'Scheduled': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const calculateGrowth = (current: number, previous: number) => {
+    if (previous === 0) return 0;
+    return ((current - previous) / previous) * 100;
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'Financial': return 'bg-green-100 text-green-800';
-      case 'Operational': return 'bg-blue-100 text-blue-800';
-      case 'Compliance': return 'bg-purple-100 text-purple-800';
-      case 'Performance': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const currentMonthData = analyticsData[analyticsData.length - 1];
+  const previousMonthData = analyticsData[analyticsData.length - 2];
+
+  const growthMetrics = {
+    applications: calculateGrowth(currentMonthData.applications, previousMonthData.applications),
+    approvals: calculateGrowth(currentMonthData.approvals, previousMonthData.approvals),
+    revenue: calculateGrowth(currentMonthData.revenue, previousMonthData.revenue),
+    companies: calculateGrowth(currentMonthData.companies, previousMonthData.companies)
   };
 
-  const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case 'Low': return 'text-green-600';
-      case 'Medium': return 'text-yellow-600';
-      case 'High': return 'text-red-600';
-      default: return 'text-gray-600';
-    }
+  const handleExportData = (format: string) => {
+    console.log(`Exporting data in ${format} format`);
+    // Implementation for data export
   };
 
-  if (loading) {
+  const handleViewDetails = (metric: string) => {
+    router.push(`/dashboard/commission-admin/analytics/details/${metric}`);
+  };
+
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-              <span className="mr-3">📊</span>
-              Analytics & Reports
-            </h1>
-            <p className="text-gray-600 mt-2">Comprehensive analytics, insights, and automated reporting</p>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
+              <p className="text-gray-600 mt-2">Comprehensive insights and performance metrics</p>
+            </div>
+            <div className="flex space-x-3">
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="7days">Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="3months">Last 3 Months</option>
+                <option value="6months">Last 6 Months</option>
+                <option value="12months">Last 12 Months</option>
+                <option value="custom">Custom Range</option>
+              </select>
+              <button
+                onClick={() => handleExportData('pdf')}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+                Export
+              </button>
+              <button
+                onClick={() => router.push('/dashboard/commission-admin/analytics/settings')}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+              >
+                <Cog6ToothIcon className="h-4 w-4 mr-2" />
+                Settings
+              </button>
+            </div>
           </div>
-          <div className="flex space-x-4">
-            <select 
-              value={dateRange} 
-              onChange={(e) => setDateRange(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+        </div>
+
+        {/* View Type Selector */}
+        <div className="mb-8">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
+            <button
+              onClick={() => setViewType('overview')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewType === 'overview'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
-              <option value="7">Last 7 days</option>
-              <option value="30">Last 30 days</option>
-              <option value="90">Last 90 days</option>
-              <option value="365">Last year</option>
-            </select>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Export Dashboard
+              Overview
+            </button>
+            <button
+              onClick={() => setViewType('companies')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewType === 'companies'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Companies
+            </button>
+            <button
+              onClick={() => setViewType('regional')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewType === 'regional'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Regional
+            </button>
+            <button
+              onClick={() => setViewType('compliance')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewType === 'compliance'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Compliance
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100">
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'overview'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Analytics Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('reports')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'reports'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Reports ({reports.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('insights')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'insights'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Business Insights
-            </button>
-          </nav>
-        </div>
-
-        <div className="p-6">
-          {activeTab === 'overview' && analyticsData && (
-            <div className="space-y-6">
-              {/* Key Metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg text-white p-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold">{analyticsData.applications.total.toLocaleString()}</div>
-                    <div className="text-sm opacity-90">Total Applications</div>
-                    <div className="text-xs mt-1 opacity-75">+12% this month</div>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl shadow-lg text-white p-6">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{formatCurrency(analyticsData.revenue.total)}</div>
-                    <div className="text-sm opacity-90">Total Revenue</div>
-                    <div className="text-xs mt-1 opacity-75">+18% this quarter</div>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg text-white p-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold">{analyticsData.performance.slaCompliance}%</div>
-                    <div className="text-sm opacity-90">SLA Compliance</div>
-                    <div className="text-xs mt-1 opacity-75">+2.1% improvement</div>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl shadow-lg text-white p-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold">{analyticsData.compliance.overallScore}%</div>
-                    <div className="text-sm opacity-90">Compliance Score</div>
-                    <div className={`text-xs mt-1 opacity-75 ${getRiskColor(analyticsData.compliance.riskLevel)}`}>
-                      {analyticsData.compliance.riskLevel} Risk
+        {viewType === 'overview' && (
+          <>
+            {/* Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Total Applications</p>
+                    <p className="text-3xl font-bold text-gray-900">{formatNumber(currentMonthData.applications)}</p>
+                    <div className="flex items-center mt-2">
+                      {growthMetrics.applications >= 0 ? (
+                        <ArrowTrendingUpIcon className="h-4 w-4 text-green-500 mr-1" />
+                      ) : (
+                        <ArrowTrendingDownIcon className="h-4 w-4 text-red-500 mr-1" />
+                      )}
+                      <span className={`text-sm font-medium ${
+                        growthMetrics.applications >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {Math.abs(growthMetrics.applications).toFixed(1)}%
+                      </span>
+                      <span className="text-sm text-gray-500 ml-1">vs last month</span>
                     </div>
                   </div>
+                  <DocumentChartBarIcon className="h-12 w-12 text-blue-600" />
                 </div>
               </div>
 
-              {/* Application Analytics */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Application Status Distribution</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Approved</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(analyticsData.applications.approved / analyticsData.applications.total) * 100}%` }}></div>
-                        </div>
-                        <span className="text-sm font-medium">{analyticsData.applications.approved}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Pending</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${(analyticsData.applications.pending / analyticsData.applications.total) * 100}%` }}></div>
-                        </div>
-                        <span className="text-sm font-medium">{analyticsData.applications.pending}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Rejected</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div className="bg-red-500 h-2 rounded-full" style={{ width: `${(analyticsData.applications.rejected / analyticsData.applications.total) * 100}%` }}></div>
-                        </div>
-                        <span className="text-sm font-medium">{analyticsData.applications.rejected}</span>
-                      </div>
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Approvals</p>
+                    <p className="text-3xl font-bold text-gray-900">{formatNumber(currentMonthData.approvals)}</p>
+                    <div className="flex items-center mt-2">
+                      {growthMetrics.approvals >= 0 ? (
+                        <ArrowTrendingUpIcon className="h-4 w-4 text-green-500 mr-1" />
+                      ) : (
+                        <ArrowTrendingDownIcon className="h-4 w-4 text-red-500 mr-1" />
+                      )}
+                      <span className={`text-sm font-medium ${
+                        growthMetrics.approvals >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {Math.abs(growthMetrics.approvals).toFixed(1)}%
+                      </span>
+                      <span className="text-sm text-gray-500 ml-1">vs last month</span>
                     </div>
                   </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Application Types</h3>
-                  <div className="space-y-3">
-                    {analyticsData.applications.byType.map((type) => (
-                      <div key={type.type} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{type.type}</span>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
-                            <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${type.percentage}%` }}></div>
-                          </div>
-                          <span className="text-sm font-medium">{type.count}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <ChartBarIcon className="h-12 w-12 text-green-600" />
                 </div>
               </div>
 
-              {/* Revenue Analytics */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Breakdown</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  {analyticsData.revenue.bySource.map((source) => (
-                    <div key={source.source} className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="text-lg font-semibold text-gray-900">{formatCurrency(source.amount)}</div>
-                      <div className="text-sm text-gray-600">{source.source}</div>
-                      <div className="text-xs text-gray-500">{source.percentage}% of total</div>
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Revenue</p>
+                    <p className="text-3xl font-bold text-gray-900">{formatCurrency(currentMonthData.revenue)}</p>
+                    <div className="flex items-center mt-2">
+                      {growthMetrics.revenue >= 0 ? (
+                        <ArrowTrendingUpIcon className="h-4 w-4 text-green-500 mr-1" />
+                      ) : (
+                        <ArrowTrendingDownIcon className="h-4 w-4 text-red-500 mr-1" />
+                      )}
+                      <span className={`text-sm font-medium ${
+                        growthMetrics.revenue >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {Math.abs(growthMetrics.revenue).toFixed(1)}%
+                      </span>
+                      <span className="text-sm text-gray-500 ml-1">vs last month</span>
                     </div>
-                  ))}
+                  </div>
+                  <CurrencyDollarIcon className="h-12 w-12 text-yellow-600" />
                 </div>
               </div>
 
-              {/* Performance Metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-                  <div className="text-2xl font-bold text-blue-600">{analyticsData.performance.avgResponseTime}d</div>
-                  <div className="text-sm text-gray-600">Avg Response Time</div>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-                  <div className="text-2xl font-bold text-green-600">{analyticsData.performance.customerSatisfaction}/5</div>
-                  <div className="text-sm text-gray-600">Customer Satisfaction</div>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-                  <div className="text-2xl font-bold text-purple-600">{analyticsData.performance.systemUptime}%</div>
-                  <div className="text-sm text-gray-600">System Uptime</div>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-                  <div className="text-2xl font-bold text-orange-600">{analyticsData.performance.processingEfficiency}%</div>
-                  <div className="text-sm text-gray-600">Processing Efficiency</div>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-                  <div className="text-2xl font-bold text-red-600">{analyticsData.applications.avgProcessingTime}d</div>
-                  <div className="text-sm text-gray-600">Avg Processing Time</div>
+              <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Active Companies</p>
+                    <p className="text-3xl font-bold text-gray-900">{formatNumber(currentMonthData.companies)}</p>
+                    <div className="flex items-center mt-2">
+                      {growthMetrics.companies >= 0 ? (
+                        <ArrowTrendingUpIcon className="h-4 w-4 text-green-500 mr-1" />
+                      ) : (
+                        <ArrowTrendingDownIcon className="h-4 w-4 text-red-500 mr-1" />
+                      )}
+                      <span className={`text-sm font-medium ${
+                        growthMetrics.companies >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {Math.abs(growthMetrics.companies).toFixed(1)}%
+                      </span>
+                      <span className="text-sm text-gray-500 ml-1">vs last month</span>
+                    </div>
+                  </div>
+                  <BuildingOfficeIcon className="h-12 w-12 text-purple-600" />
                 </div>
               </div>
             </div>
-          )}
 
-          {activeTab === 'reports' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Available Reports</h3>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                  Generate Custom Report
-                </button>
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {/* Applications Trend */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Applications & Approvals Trend</h3>
+                  <button
+                    onClick={() => handleViewDetails('applications')}
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    View Details
+                  </button>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={analyticsData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="period" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="applications" stroke="#3B82F6" strokeWidth={2} name="Applications" />
+                    <Line type="monotone" dataKey="approvals" stroke="#10B981" strokeWidth={2} name="Approvals" />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {reports.map((report) => (
-                  <div key={report.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-semibold text-gray-900">{report.name}</h4>
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTypeColor(report.type)}`}>
-                        {report.type}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">{report.description}</p>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Frequency:</span>
-                        <span className="text-gray-900">{report.frequency}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Last Generated:</span>
-                        <span className="text-gray-900">{formatDate(report.lastGenerated)}</span>
-                      </div>
-                      {report.size && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">Size:</span>
-                          <span className="text-gray-900">{report.size}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Status:</span>
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(report.status)}`}>
-                          {report.status}
+
+              {/* Revenue Trend */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Revenue Trend</h3>
+                  <button
+                    onClick={() => handleViewDetails('revenue')}
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    View Details
+                  </button>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={analyticsData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="period" />
+                    <YAxis />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Area type="monotone" dataKey="revenue" stroke="#F59E0B" fill="#FEF3C7" strokeWidth={2} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Application Status Distribution */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Application Status Distribution</h3>
+                  <button
+                    onClick={() => handleViewDetails('status')}
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    View Details
+                  </button>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {pieChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Monthly Inspections */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Monthly Inspections</h3>
+                  <button
+                    onClick={() => handleViewDetails('inspections')}
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    View Details
+                  </button>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={analyticsData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="period" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="inspections" fill="#8B5CF6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </>
+        )}
+
+        {viewType === 'companies' && (
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Company Performance Analysis</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applications</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approvals</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Content</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {companyPerformance.map((company, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="font-medium text-gray-900">{company.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {company.applications}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {company.approvals}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {formatCurrency(company.revenue)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                              <div 
+                                className={`h-2 rounded-full ${
+                                  company.compliance >= 90 ? 'bg-green-500' :
+                                  company.compliance >= 80 ? 'bg-yellow-500' : 'bg-red-500'
+                                }`}
+                                style={{ width: `${company.compliance}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-sm text-gray-900">{company.compliance}%</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                              <div 
+                                className={`h-2 rounded-full ${
+                                  company.localContent >= 80 ? 'bg-green-500' :
+                                  company.localContent >= 70 ? 'bg-yellow-500' : 'bg-red-500'
+                                }`}
+                                style={{ width: `${company.localContent}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-sm text-gray-900">{company.localContent}%</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => handleViewDetails(`company-${index}`)}
+                            className="text-blue-600 hover:text-blue-900 mr-3"
+                          >
+                            <EyeIcon className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {viewType === 'regional' && (
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Regional Performance Analysis</h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={regionalData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="region" angle={-45} textAnchor="end" height={100} />
+                      <YAxis />
+                      <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                      <Bar dataKey="revenue" fill="#3B82F6" name="Revenue" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Region</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Companies</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applications</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compliance</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {regionalData.map((region, index) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                            {region.region}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {region.companies}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {region.applications}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              region.compliance >= 90 ? 'bg-green-100 text-green-800' :
+                              region.compliance >= 85 ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {region.compliance}%
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {viewType === 'compliance' && (
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Compliance Performance</h3>
+              <div className="space-y-6">
+                {complianceData.map((item, index) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-gray-900">{item.category}</h4>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-500">Target: {item.target}%</span>
+                        <span className={`text-sm font-medium ${
+                          item.score >= item.target ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                          Current: {item.score}%
                         </span>
                       </div>
                     </div>
-                    <div className="mt-4 flex space-x-2">
-                      {report.status === 'Ready' && (
-                        <>
-                          <button className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                            Download
-                          </button>
-                          <button className="flex-1 bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm">
-                            View
-                          </button>
-                        </>
-                      )}
-                      {report.status === 'Scheduled' && (
-                        <button className="w-full bg-yellow-600 text-white px-3 py-2 rounded-lg hover:bg-yellow-700 transition-colors text-sm">
-                          Generate Now
-                        </button>
-                      )}
-                      {report.status === 'Generating' && (
-                        <button className="w-full bg-gray-400 text-white px-3 py-2 rounded-lg cursor-not-allowed text-sm" disabled>
-                          Generating...
-                        </button>
-                      )}
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div 
+                        className={`h-3 rounded-full transition-all duration-300 ${
+                          item.score >= item.target ? 'bg-green-500' : 'bg-red-500'
+                        }`}
+                        style={{ width: `${Math.min(item.score, 100)}%` }}
+                      ></div>
+                    </div>
+                    <div className="mt-2 flex justify-between text-xs text-gray-500">
+                      <span>0%</span>
+                      <span>50%</span>
+                      <span>100%</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          {activeTab === 'insights' && analyticsData && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Business Insights & Recommendations</h3>
+        {/* Quick Actions */}
+        <div className="mt-8 bg-white rounded-lg shadow">
+          <div className="p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <button
+                onClick={() => router.push('/dashboard/commission-admin/analytics/reports')}
+                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <DocumentChartBarIcon className="h-8 w-8 text-blue-600 mr-3" />
+                <div className="text-left">
+                  <p className="font-medium text-gray-900">Generate Report</p>
+                  <p className="text-sm text-gray-500">Create custom analytics report</p>
+                </div>
+              </button>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-blue-900 mb-3">📈 Growth Opportunities</h4>
-                  <ul className="space-y-2 text-sm text-blue-800">
-                    <li>• Application volume increased 12% this month - consider expanding processing capacity</li>
-                    <li>• JV applications show 25% growth potential based on market trends</li>
-                    <li>• Revenue from permit fees could be optimized with dynamic pricing</li>
-                    <li>• Customer satisfaction scores indicate opportunity for premium services</li>
-                  </ul>
+              <button
+                onClick={() => router.push('/dashboard/commission-admin/analytics/dashboard')}
+                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <PresentationChartLineIcon className="h-8 w-8 text-green-600 mr-3" />
+                <div className="text-left">
+                  <p className="font-medium text-gray-900">Custom Dashboard</p>
+                  <p className="text-sm text-gray-500">Build personalized view</p>
                 </div>
-                
-                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-yellow-900 mb-3">⚠️ Areas for Improvement</h4>
-                  <ul className="space-y-2 text-sm text-yellow-800">
-                    <li>• Average processing time of {analyticsData.applications.avgProcessingTime} days exceeds target of 10 days</li>
-                    <li>• {analyticsData.applications.pending} applications currently pending - review bottlenecks</li>
-                    <li>• SLA compliance at {analyticsData.performance.slaCompliance}% - target 95%+</li>
-                    <li>• {analyticsData.compliance.pendingActions} compliance actions pending resolution</li>
-                  </ul>
-                </div>
-                
-                <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-green-900 mb-3">✅ Performance Highlights</h4>
-                  <ul className="space-y-2 text-sm text-green-800">
-                    <li>• System uptime maintained at {analyticsData.performance.systemUptime}% - excellent reliability</li>
-                    <li>• Revenue growth of 18% this quarter exceeds projections</li>
-                    <li>• Compliance score of {analyticsData.compliance.overallScore}% indicates strong regulatory adherence</li>
-                    <li>• Customer satisfaction rating of {analyticsData.performance.customerSatisfaction}/5 shows high service quality</li>
-                  </ul>
-                </div>
-                
-                <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-purple-900 mb-3">🎯 Strategic Recommendations</h4>
-                  <ul className="space-y-2 text-sm text-purple-800">
-                    <li>• Implement automated workflow routing to reduce processing times</li>
-                    <li>• Develop predictive analytics for application approval likelihood</li>
-                    <li>• Create self-service portal to reduce manual processing overhead</li>
-                    <li>• Establish proactive compliance monitoring and alerting system</li>
-                  </ul>
-                </div>
-              </div>
+              </button>
               
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">📊 Trend Analysis</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">+12%</div>
-                    <div className="text-sm text-gray-600">Application Volume Growth</div>
-                    <div className="text-xs text-gray-500">Month over Month</div>
-                  </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">+18%</div>
-                    <div className="text-sm text-gray-600">Revenue Growth</div>
-                    <div className="text-xs text-gray-500">Quarter over Quarter</div>
-                  </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">+2.1%</div>
-                    <div className="text-sm text-gray-600">SLA Compliance Improvement</div>
-                    <div className="text-xs text-gray-500">Year over Year</div>
-                  </div>
+              <button
+                onClick={() => handleExportData('excel')}
+                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <TableCellsIcon className="h-8 w-8 text-purple-600 mr-3" />
+                <div className="text-left">
+                  <p className="font-medium text-gray-900">Export Data</p>
+                  <p className="text-sm text-gray-500">Download as Excel/CSV</p>
                 </div>
-              </div>
+              </button>
+              
+              <button
+                onClick={() => router.push('/dashboard/commission-admin/analytics/alerts')}
+                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <ClockIcon className="h-8 w-8 text-orange-600 mr-3" />
+                <div className="text-left">
+                  <p className="font-medium text-gray-900">Set Alerts</p>
+                  <p className="text-sm text-gray-500">Configure notifications</p>
+                </div>
+              </button>
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg text-white p-6">
-          <h3 className="text-lg font-semibold mb-2">Custom Reports</h3>
-          <p className="text-sm opacity-90 mb-4">Create tailored reports for specific needs</p>
-          <button 
-            onClick={() => router.push('/dashboard/commission-admin/analytics/custom-reports')}
-            className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors"
-          >
-            Create Report
-          </button>
-        </div>
-        <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl shadow-lg text-white p-6">
-          <h3 className="text-lg font-semibold mb-2">Data Export</h3>
-          <p className="text-sm opacity-90 mb-4">Export data for external analysis</p>
-          <button 
-            onClick={() => router.push('/dashboard/commission-admin/analytics/export')}
-            className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors"
-          >
-            Export Data
-          </button>
-        </div>
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg text-white p-6">
-          <h3 className="text-lg font-semibold mb-2">Predictive Analytics</h3>
-          <p className="text-sm opacity-90 mb-4">AI-powered insights and forecasting</p>
-          <button 
-            onClick={() => router.push('/dashboard/commission-admin/analytics/predictive')}
-            className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors"
-          >
-            View Predictions
-          </button>
-        </div>
-        <div className="bg-gradient-to-r from-orange-600 to-orange-700 rounded-xl shadow-lg text-white p-6">
-          <h3 className="text-lg font-semibold mb-2">Benchmarking</h3>
-          <p className="text-sm opacity-90 mb-4">Compare performance against industry standards</p>
-          <button 
-            onClick={() => router.push('/dashboard/commission-admin/analytics/benchmarks')}
-            className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm transition-colors"
-          >
-            View Benchmarks
-          </button>
+          </div>
         </div>
       </div>
     </div>

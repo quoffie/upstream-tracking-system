@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import { getCommissionAdminMenuItems } from '../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../app/components/layouts/DashboardLayout';
+import { getCommissionAdminMenuItems } from '../../../app/components/layouts/DashboardMenus';
 import { usePathname } from 'next/navigation';
 
 // Mock data for charts

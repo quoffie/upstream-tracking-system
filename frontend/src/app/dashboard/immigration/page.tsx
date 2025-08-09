@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import { getImmigrationMenuItems } from '../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../app/components/layouts/DashboardLayout';
+import { getImmigrationMenuItems } from '../../../app/components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApprovalIcon,

@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import { getPersonnelMenuItems } from '../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../app/components/layouts/DashboardLayout';
+import { getPersonnelMenuItems } from '../../../app/components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApplicationIcon,

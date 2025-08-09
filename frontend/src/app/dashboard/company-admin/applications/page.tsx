@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import DashboardLayout from '../../../components/layouts/DashboardLayout';
-import { getCompanyAdminMenuItems } from '../../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../../app/components/layouts/DashboardLayout';
+import { getCompanyAdminMenuItems } from '../../../../app/components/layouts/DashboardMenus';
 import { usePermits } from '../../../hooks/useApi';
 import { apiService } from '../../../services/api.service';
 import { 

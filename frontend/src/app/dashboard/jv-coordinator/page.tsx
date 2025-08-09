@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import { getJVCoordinatorMenuItems } from '../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../app/components/layouts/DashboardLayout';
+import { getJVCoordinatorMenuItems } from '../../../app/components/layouts/DashboardMenus';
 import {
   HomeIcon,
   ApplicationIcon,

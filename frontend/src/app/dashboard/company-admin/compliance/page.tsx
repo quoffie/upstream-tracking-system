@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import DashboardLayout from '../../../components/layouts/DashboardLayout';
-import { getCompanyAdminMenuItems } from '../../../components/layouts/DashboardMenus';
+import DashboardLayout from '../../../../app/components/layouts/DashboardLayout';
+import { getCompanyAdminMenuItems } from '../../../../app/components/layouts/DashboardMenus';
 import { 
   ShieldCheckIcon, 
   ExclamationTriangleIcon, 
